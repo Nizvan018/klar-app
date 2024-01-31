@@ -12,6 +12,12 @@
       ],
       "@navigation/*": [
         "src/navigation/*"
+      ],
+      "@assets/*": [
+        "assets/*"
+      ],
+      "@types/*": [
+        "src/types/*"
       ]
     }
   }
