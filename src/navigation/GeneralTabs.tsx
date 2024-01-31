@@ -1,34 +1,14 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons'
 import SelectedTab from "@/components/TabBar/SelectedTab";
-import { ReactNode } from "react";
 // Screens:
-import HomeScreen from '@/screens/HomeScreen';
+import HomeScreen from "@/screens/HomeScreen";
 import CardsScreen from "@/screens/CardsScreen";
 import ProfileScreen from "@/screens/ProfileScreen";
-import LoginScreen from "@/screens/auth/LoginScreen";
-
-const GeneralStackNavigator = createNativeStackNavigator();
-
-function MyStack() {
-    return (
-        <GeneralStackNavigator.Navigator
-            initialRouteName="Login"
-            screenOptions={{
-                headerShown: false
-            }}
-        >
-            <GeneralStackNavigator.Screen name="Login" component={LoginScreen} />
-            <GeneralStackNavigator.Screen name="General" component={MyTabs} />
-        </GeneralStackNavigator.Navigator>
-    )
-}
 
 const Tab = createBottomTabNavigator();
 
-function MyTabs() {
+export default function GeneralTab() {
     return (
         <Tab.Navigator
             initialRouteName="Home"
@@ -67,13 +47,5 @@ function MyTabs() {
                 }}
             />
         </Tab.Navigator>
-    )
-}
-
-export default function Navigation() {
-    return (
-        <NavigationContainer>
-            <MyStack />
-        </NavigationContainer>
     )
 }

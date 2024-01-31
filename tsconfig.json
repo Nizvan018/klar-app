@@ -9,6 +9,9 @@
       ],
       "@screens/*": [
         "src/screens/*"
+      ],
+      "@navigation/*": [
+        "src/navigation/*"
       ]
     }
   }
