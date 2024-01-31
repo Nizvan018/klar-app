@@ -1,12 +1,17 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons } from '@expo/vector-icons';
+// Types:
+import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import type { RootBottomParamList } from "@/types/navigationTypes";
+
+const backgroundImage = require('@assets/images/login-background.png');
 
 export default function LoginScreen() {
-    const navigation = useNavigation();
+    const navigation = useNavigation<BottomTabNavigationProp<RootBottomParamList>>();
 
     return (
-        <View style={styles.container}>
+        <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.container}>
             <View style={styles.top_card}>
                 <Text style={styles.title}>Klar</Text>
                 <View style={styles.info_card}>
@@ -17,7 +22,9 @@ export default function LoginScreen() {
 
             <View style={styles.bottom_card}>
                 <Text style={styles.greeting}>Buenas noches, Nizvan</Text>
-                <Text style={styles.is_not_you}>¿No eres tu?</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('IsNotYou')}>
+                    <Text style={styles.is_not_you}>¿No eres tu?</Text>
+                </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.button}
                     onPress={() => navigation.navigate('General')}
@@ -28,7 +35,7 @@ export default function LoginScreen() {
                     </Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </ImageBackground>
     )
 }
 
@@ -37,8 +44,12 @@ const styles = StyleSheet.create({
         flex: 1,
         alignContent: 'center',
         justifyContent: 'space-between',
-        paddingVertical: 40,
-        backgroundColor: '#bbb'
+        paddingVertical: 40
+    },
+    background_image: {
+        flex: 1,
+        position: 'absolute',
+        justifyContent: 'center'
     },
     top_card: {
         display: 'flex',
