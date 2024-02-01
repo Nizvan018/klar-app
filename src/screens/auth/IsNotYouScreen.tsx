@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
 import CustomTextInput from "@/components/inputs/CustomTextInput";
 // Types:
 import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
@@ -9,12 +10,20 @@ import type { RootBottomParamList } from "@/types/navigationTypes";
 export default function LoginScreen() {
     const { control, handleSubmit, formState: { errors } } = useForm();
     const navigation = useNavigation<BottomTabNavigationProp<RootBottomParamList>>();
+    const [isDisabled, setIsDisabled] = useState(true);
 
     const onSubmit = handleSubmit((data) => {
         navigation.navigate('General');
     });
 
-    console.log(errors);
+    useEffect(() => {
+        if (errors?.correo || errors?.password) {
+            setIsDisabled(true);
+            console.log('holi')
+        } else {
+            setIsDisabled(false);
+        }
+    }, [errors?.correo, errors?.password]);
 
     return (
         <View style={styles.container}>
@@ -31,7 +40,7 @@ export default function LoginScreen() {
 
                 {/* CORREO ELECTRÓNICO */}
                 <CustomTextInput
-                    name="Correo"
+                    name="correo"
                     label="Correo"
                     control={control}
                     rules={{
@@ -78,8 +87,9 @@ export default function LoginScreen() {
 
                 {/* BOTÓN */}
                 <TouchableOpacity
-                    style={[styles.button, styles.d_flex]}
+                    style={[styles.button, styles.d_flex, isDisabled ? { backgroundColor: '#aaa' } : { backgroundColor: '#222' }]}
                     onPress={onSubmit}
+                    disabled={isDisabled}
                 >
                     <Text style={styles.button_text}>Iniciar sesión</Text>
                 </TouchableOpacity>
@@ -141,7 +151,6 @@ const styles = StyleSheet.create({
         gap: 4,
         borderRadius: 8,
         paddingVertical: 20,
-        backgroundColor: '#222'
     },
     button_text: {
         color: 'white',
