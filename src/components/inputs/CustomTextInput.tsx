@@ -5,7 +5,7 @@ import { TextInput } from 'react-native-paper';
 import type { Control, RegisterOptions } from 'react-hook-form';
 
 interface Props {
-	control?: Control
+	control?: Control<any>
 	name: string,
 	label?: string,
 	secureTextEntry?: boolean,
@@ -31,6 +31,7 @@ export default function CustomTextInput({ control, name, rules = {}, label, secu
 						secureTextEntry={secureTextEntry}
 						mode={mode}
 						style={styles.input}
+						outlineStyle={styles.outline}
 						outlineColor={error ? '#e77' : outlineColor}
 						activeOutlineColor={error ? '#e77' : activeOutlineColor}
 						cursorColor='black'
@@ -48,6 +49,9 @@ const styles = StyleSheet.create({
 	input: {
 		fontSize: 13,
 		backgroundColor: 'transparent'
+	},
+	outline: {
+		borderRadius: 10
 	},
 	text: {
 		marginTop: 2,
