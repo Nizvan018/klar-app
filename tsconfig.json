@@ -18,7 +18,16 @@
       ],
       "@types/*": [
         "src/types/*"
+      ],
+      "@api/*": [
+        "src/api/*"
+      ],
+      "@context/*": [
+        "src/context/*"
       ]
-    }
+    },
+    "typeRoots": [
+      "./src/types"
+    ]
   }
 }
