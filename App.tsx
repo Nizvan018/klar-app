@@ -1,9 +1,10 @@
-import { StatusBar } from 'expo-status-bar';
 import Navigation from '@/navigation/Navigation';
-
+import { UserProvider } from '@/context/AuthContext';
 
 export default function App() {
-  return (
-    <Navigation />
-  );
+	return (
+		<UserProvider>
+			<Navigation />
+		</UserProvider>
+	);
 }
