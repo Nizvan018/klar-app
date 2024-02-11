@@ -4,6 +4,7 @@ function CardsScreen() {
     return (
         <View>
             <Text>Cards Screen</Text>
+
         </View>
     )
 }
