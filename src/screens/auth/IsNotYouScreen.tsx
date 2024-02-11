@@ -1,25 +1,20 @@
-import { View, Text, TouchableOpacity, StyleSheet, TextInput } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import CustomTextInput from "@/components/inputs/CustomTextInput";
-// Types:
-import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import type { RootBottomParamList } from "@/types/navigationTypes";
+import { login } from "@/api/auth";
 
 export default function LoginScreen() {
     const { control, handleSubmit, formState: { errors } } = useForm();
-    const navigation = useNavigation<BottomTabNavigationProp<RootBottomParamList>>();
     const [isDisabled, setIsDisabled] = useState(true);
 
     const onSubmit = handleSubmit((data) => {
-        navigation.navigate('General');
+        login(data.correo, data.password);
     });
 
     useEffect(() => {
         if (errors?.correo || errors?.password) {
             setIsDisabled(true);
-            console.log('holi')
         } else {
             setIsDisabled(false);
         }
