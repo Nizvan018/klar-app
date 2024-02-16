@@ -13,6 +13,9 @@ export const main = StyleSheet.create({
     align_center: {
         alignItems: 'center'
     },
+    justify_center: {
+        justifyContent: 'center'
+    },
     p_16: {
         padding: 16
     },
