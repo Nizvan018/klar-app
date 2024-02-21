@@ -24,7 +24,7 @@ export default function ToggleSwitch({ onPress }: Props) {
                     buttonColor={'white'}
                     backgroundColor={'transparent'}
                     animationDuration={300}
-                    height={32}
+                    height={24}
                     onPress={(value: number) => onPress(value)}
                 />
             </View>

@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons'
 import SelectedTab from "@/components/TabBar/SelectedTab";
 // Screens:
-import HomeScreen from "@/screens/HomeScreen";
+import HomeScreen from "@/screens/home/HomeScreen";
 import CardsScreen from "@/screens/CardsScreen";
 import ProfileScreen from "@/screens/ProfileScreen";
 
