@@ -1,12 +1,13 @@
-import { ScrollView, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import { useUser } from '@/context/AuthContext';
+import { useState } from 'react';
 import { main } from '@assets/styles/main';
 // COMPONENTS:
 import Header from '@/components/header';
 import ToggleSwitch from '@/components/inputs/ToggleSwitch';
 import DebitCard from './DebitCard';
 import CreditCard from './CreditCard';
-import React, { useState, useEffect } from 'react';
+import MovementsSection from './MovementsSection';
 
 export default function HomeScreen() {
     const user = useUser();
@@ -34,6 +35,8 @@ export default function HomeScreen() {
                     </>
                 )}
             </View>
+
+            <MovementsSection />
         </ScrollView>
     );
 }
