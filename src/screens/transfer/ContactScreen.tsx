@@ -2,12 +2,18 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { main } from "@assets/styles/main";
 import { AntDesign, EvilIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootBottomParamList } from "@/types/navigationTypes";
 
 export default function ContactScreen() {
-    const navigation = useNavigation();
+    const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();
 
     const goBack = () => {
         navigation.goBack();
+    }
+
+    const goToAddContact = () => {
+        navigation.navigate('AddContact');
     }
 
     return (
@@ -35,7 +41,7 @@ export default function ContactScreen() {
                 </View>
             </View>
 
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={goToAddContact}>
                 <Text style={styles.button_text}>Crear destinatario</Text>
             </TouchableOpacity>
         </View>
