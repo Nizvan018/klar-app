@@ -4,6 +4,7 @@ import { useUser } from "@/context/AuthContext";
 import LoginScreen from "@/screens/auth/LoginScreen";
 import IsNotYouScreen from "@/screens/auth/IsNotYouScreen";
 import GeneralTab from "./GeneralTabs";
+import ContactScreen from "@/screens/transfer/ContactScreen";
 
 const GeneralStackNavigator = createNativeStackNavigator();
 
@@ -19,7 +20,10 @@ export default function GeneralStack() {
         >
 
             {user ? (
-                <GeneralStackNavigator.Screen name="General" component={GeneralTab} />
+                <>
+                    <GeneralStackNavigator.Screen name="General" component={GeneralTab} />
+                    <GeneralStackNavigator.Screen name="Contact" component={ContactScreen} />
+                </>
             ) : (
                 <>
                     <GeneralStackNavigator.Screen name="Login" component={LoginScreen} />
