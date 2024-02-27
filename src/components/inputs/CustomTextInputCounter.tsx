@@ -1,0 +1,71 @@
+import { View, Text, StyleSheet } from 'react-native';
+import { Controller } from 'react-hook-form';
+import { TextInput } from 'react-native-paper';
+
+import type { Control, RegisterOptions } from 'react-hook-form';
+
+interface Props {
+    control?: Control<any>
+    name: string,
+    label?: string,
+    placeholder?: string,
+    secureTextEntry?: boolean,
+    rules?: RegisterOptions,
+    mode?: 'flat' | 'outlined'
+    outlineColor?: string
+    activeOutlineColor?: string
+    max: number
+    min: number
+}
+
+export default function CustomTextInputCounter({ control, name, rules = {}, label, secureTextEntry, mode, outlineColor, activeOutlineColor, placeholder, max, min }: Props) {
+    return (
+        <Controller
+            control={control}
+            name={name}
+            rules={rules}
+            render={({ field: { value = "", onChange, onBlur }, fieldState: { error } }) => (
+                <View>
+                    <TextInput
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        label={label}
+                        placeholder={placeholder}
+                        secureTextEntry={secureTextEntry}
+                        mode={mode}
+                        style={styles.input}
+                        outlineStyle={styles.outline}
+                        outlineColor={error ? '#e77' : outlineColor}
+                        activeOutlineColor={error ? '#e77' : activeOutlineColor}
+                        cursorColor='black'
+                    />
+                    <Text style={[styles.text, value.length > max || value.length < min ? styles.text_wrong : styles.text_right]}>{value.length}/{max}</Text>
+                </View>
+            )}
+        />
+    )
+}
+
+const styles = StyleSheet.create({
+    input: {
+        fontSize: 13,
+        backgroundColor: 'transparent'
+    },
+    outline: {
+        borderRadius: 10
+    },
+    text: {
+        paddingHorizontal: 20,
+        marginTop: 4,
+        marginBottom: 8,
+        textAlign: 'right',
+        fontSize: 16
+    },
+    text_right: {
+        color: 'black',
+    },
+    text_wrong: {
+        color: '#f66',
+    }
+});

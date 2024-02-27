@@ -3,4 +3,5 @@ export type RootBottomParamList = {
     IsNotYou: { id: number } | undefined;
     Login: { id: number } | undefined;
     Contact: { id: number } | undefined;
+    AddContact: { id: number } | undefined;
 }

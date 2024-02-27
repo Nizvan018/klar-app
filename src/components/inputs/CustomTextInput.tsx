@@ -8,6 +8,7 @@ interface Props {
 	control?: Control<any>
 	name: string,
 	label?: string,
+	placeholder?: string,
 	secureTextEntry?: boolean,
 	rules?: RegisterOptions,
 	mode?: 'flat' | 'outlined'
@@ -15,7 +16,7 @@ interface Props {
 	activeOutlineColor?: string
 }
 
-export default function CustomTextInput({ control, name, rules = {}, label, secureTextEntry, mode, outlineColor, activeOutlineColor }: Props) {
+export default function CustomTextInput({ control, name, rules = {}, label, secureTextEntry, mode, outlineColor, activeOutlineColor, placeholder }: Props) {
 	return (
 		<Controller
 			control={control}
@@ -28,6 +29,7 @@ export default function CustomTextInput({ control, name, rules = {}, label, secu
 						onChangeText={onChange}
 						onBlur={onBlur}
 						label={label}
+						placeholder={placeholder}
 						secureTextEntry={secureTextEntry}
 						mode={mode}
 						style={styles.input}
