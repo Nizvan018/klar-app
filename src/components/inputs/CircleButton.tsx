@@ -4,13 +4,14 @@ import { ReactNode } from "react";
 
 interface Props {
     children: ReactNode,
-    label?: string
+    label?: string,
+    action: any
 }
 
-export default function CircleButton({ children, label }: Props) {
+export default function CircleButton({ children, label, action }: Props) {
     return (
         <View style={[main.flex, main.align_center, main.justify_center, { maxWidth: 60 }]}>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => action()}>
                 {children}
             </TouchableOpacity>
             {label && (

@@ -5,13 +5,14 @@ import SelectedTab from "@/components/TabBar/SelectedTab";
 import HomeScreen from "@/screens/home/HomeScreen";
 import CardsScreen from "@/screens/CardsScreen";
 import ProfileScreen from "@/screens/ProfileScreen";
+import HomeStack from "./HomeStack";
 
 const Tab = createBottomTabNavigator();
 
 export default function GeneralTab() {
     return (
         <Tab.Navigator
-            initialRouteName="Home"
+            initialRouteName="HomeStack"
             screenOptions={{
                 tabBarStyle: {
                     height: 60
@@ -22,8 +23,8 @@ export default function GeneralTab() {
             }}
         >
             <Tab.Screen
-                name='Home'
-                component={HomeScreen}
+                name='HomeStack'
+                component={HomeStack}
                 options={{
                     tabBarIcon: () => <AntDesign name="home" size={32} color={'black'} />,
                     tabBarLabel: ({ color }) => <SelectedTab color={color} />

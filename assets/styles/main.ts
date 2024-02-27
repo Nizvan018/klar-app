@@ -31,10 +31,22 @@ export const main = StyleSheet.create({
     color_gray: {
         color: '#555'
     },
+    color_black: {
+        color: '#222'
+    },
+    color_white: {
+        color: '#fff'
+    },
     bg_primary: {
         backgroundColor: '#398'
     },
     bg_gray: {
         backgroundColor: '#555'
+    },
+    bg_black: {
+        backgroundColor: '#222'
+    },
+    bg_white: {
+        backgroundColor: '#fff'
     }
 });

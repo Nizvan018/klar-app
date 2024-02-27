@@ -1,15 +1,24 @@
 import { View, Text, StyleSheet, TextStyle } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons, FontAwesome6, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import Card from "@/components/Card";
 import CircleButton from "@/components/inputs/CircleButton";
 
 import { main } from "@assets/styles/main";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootBottomParamList } from "@/types/navigationTypes";
 
 interface Props {
     disabled?: TextStyle
 }
 
 export default function DebitCard({ disabled }: Props) {
+    const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();;
+
+    const goToTransfer = () => {
+        navigation.navigate('Contact');
+    }
+
     return (
         <Card>
             <View style={main.p_16}>
@@ -44,16 +53,16 @@ export default function DebitCard({ disabled }: Props) {
             <View style={styles.divider}></View>
 
             <View style={[main.flex, main.flex_row, main.space_between, main.align_center, main.p_16]}>
-                <CircleButton label='Transferir'>
+                <CircleButton label='Transferir' action={goToTransfer}>
                     <FontAwesome6 name='money-bill-transfer' size={24} />
                 </CircleButton>
-                <CircleButton label='Pagar servicios'>
+                <CircleButton label='Pagar servicios' action={console.log('')}>
                     <MaterialCommunityIcons name='bank' size={24} />
                 </CircleButton>
-                <CircleButton label='Depositar a la cuenta'>
+                <CircleButton label='Depositar a la cuenta' action={console.log('')}>
                     <MaterialCommunityIcons name='credit-card-plus' size={24} />
                 </CircleButton>
-                <CircleButton label='Más'>
+                <CircleButton label='Más' action={console.log('')}>
                     <Feather name='more-horizontal' size={24} />
                 </CircleButton>
             </View>
