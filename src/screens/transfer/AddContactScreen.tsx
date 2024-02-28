@@ -1,11 +1,13 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import { main } from "@assets/styles/main";
 import CustomTextInputCounter from "@/components/inputs/CustomTextInputCounter";
-import SelectDropdown from "react-native-select-dropdown";
 import { useState, useEffect } from "react";
+import SelectInput from "@/components/inputs/SelectInput";
+
+const info_type = ['CLABE', 'Tarjeta']
 
 export default function AddContactScreen() {
     const { control, handleSubmit, formState: { errors }, setValue } = useForm();
@@ -20,6 +22,11 @@ export default function AddContactScreen() {
     const onSubmit = handleSubmit((data) => {
         console.log(data);
     });
+
+    const chageInfoType = (selectedItem: any, index: number) => {
+        setType({ nombre: selectedItem, valor: index });
+        setValue('clabe_tarjeta', '', { shouldValidate: true });
+    }
 
     useEffect(() => {
         if (errors?.nombre || errors?.clabe_tarjeta || errors?.etiqueta) {
@@ -65,39 +72,8 @@ export default function AddContactScreen() {
                 activeOutlineColor="black"
             />
 
-            <SelectDropdown
-                data={['CLABE', 'Tarjeta']}
-                onSelect={(selectedItem, index) => {
-                    setType({ nombre: selectedItem, valor: index });
-                    setValue('clabe_tarjeta', '', { shouldValidate: true });
-                }}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                    return selectedItem;
-                }}
-                rowTextForSelection={(item, index) => {
-                    return item;
-                }}
-                defaultValue={'CLABE'}
-                buttonStyle={{
-                    width: '100%',
-                    borderWidth: 1,
-                    borderColor: '#aaa',
-                    borderRadius: 8,
-                    marginBottom: 8,
-                    backgroundColor: 'transparent'
-                }}
-                buttonTextStyle={{
-                    fontSize: 12,
-                    textAlign: 'left'
-                }}
-                renderDropdownIcon={() => (
-                    <MaterialIcons name="keyboard-arrow-down" size={24} />
-                )}
-                dropdownStyle={{
-                    borderWidth: 0,
-                    borderRadius: 8
-                }}
-            />
+            {/* SELECT INPUT */}
+            <SelectInput data={info_type} action={chageInfoType} defaultValue={info_type[0]} />
 
             {/* CLABE/TARJETA */}
             <CustomTextInputCounter
