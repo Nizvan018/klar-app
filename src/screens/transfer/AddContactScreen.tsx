@@ -6,6 +6,9 @@ import { main } from "@assets/styles/main";
 import CustomTextInputCounter from "@/components/inputs/CustomTextInputCounter";
 import { useState, useEffect } from "react";
 import SelectInput from "@/components/inputs/SelectInput";
+import { addRecipient } from "@/api/recipients";
+import { Recipient } from "@/types/database.type";
+import { useUser } from "@/context/AuthContext";
 
 const info_type = ['CLABE', 'Tarjeta']
 
@@ -14,13 +17,23 @@ export default function AddContactScreen() {
     const [type, setType] = useState({ nombre: 'CLABE', valor: 0 });
     const [isDisabled, setIsDisabled] = useState(true);
     const navigation = useNavigation();
+    const user = useUser();
 
     const goBack = () => {
         navigation.goBack();
     }
 
-    const onSubmit = handleSubmit((data) => {
+    const onSubmit = handleSubmit(async (data) => {
         console.log(data);
+
+        const recipient: Recipient = {
+            name: data.nombre,
+            numberType: type.nombre === 'CLABE' ? 'CLABE' : 'Tarjeta',
+            number: data.clabe_tarjeta,
+            label: data.etiqueta
+        }
+
+        await addRecipient(recipient, user?.uid);
     });
 
     const chageInfoType = (selectedItem: any, index: number) => {
@@ -126,7 +139,7 @@ export default function AddContactScreen() {
                 onPress={onSubmit}
                 disabled={isDisabled}
             >
-                <Text style={styles.button_text}>Iniciar sesión</Text>
+                <Text style={styles.button_text}>Agregar destinatario</Text>
             </TouchableOpacity>
         </View>
     )
