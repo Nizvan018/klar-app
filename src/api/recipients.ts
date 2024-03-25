@@ -1,8 +1,32 @@
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, where, QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 import { DB } from "firebase-config";
 import { Recipient } from "@/types/database.type";
 import Toast from "react-native-toast-message";
 
+// Method to query recipients from database:
+export const getRecipients = async () => {
+    try {
+        const docs = await getDocs(collection(DB, 'recipient'));
+        let recipients = new Array();
+
+        docs.forEach(doc => {
+            recipients.push(doc);
+        });
+
+        return recipients;
+    } catch (e) {
+        console.log(e);
+
+        Toast.show({
+            type: 'error',
+            text1: 'Sucedió un error inesperado, intente más tarde'
+        });
+
+        return false;
+    }
+}
+
+// Method to add recipients to the database:
 export const addRecipient = async (recipient: Recipient, user_id: string | undefined) => {
     try {
         let repetido = false;
@@ -12,7 +36,7 @@ export const addRecipient = async (recipient: Recipient, user_id: string | undef
             if (doc.data().name === recipient.name || doc.data().number === recipient.number) {
                 Toast.show({
                     type: 'error',
-                    text1: 'Destinatario ya existe'
+                    text1: 'El destinatario ya existe'
                 });
 
                 repetido = true;
@@ -20,7 +44,7 @@ export const addRecipient = async (recipient: Recipient, user_id: string | undef
         });
 
         if (repetido) {
-            return
+            return false;
         }
 
         const docRef = await addDoc(collection(DB, "recipient"), {
@@ -35,10 +59,14 @@ export const addRecipient = async (recipient: Recipient, user_id: string | undef
             type: 'success',
             text1: 'Destinatario agregado correctamente'
         });
+
+        return true;
     } catch (e) {
         Toast.show({
             type: 'error',
             text1: 'Sucedió un error inesperado, intente más tarde'
         });
+
+        return false;
     }
 }

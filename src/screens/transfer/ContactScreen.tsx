@@ -1,12 +1,16 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
 import { main } from "@assets/styles/main";
 import { AntDesign, EvilIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootBottomParamList } from "@/types/navigationTypes";
+import { getRecipients } from "@/api/recipients";
 
 export default function ContactScreen() {
     const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();
+    const [recipients, setRecipients] = useState(Array());
+    const [isCharging, setIsCharging] = useState(true);
 
     const goBack = () => {
         navigation.goBack();
@@ -15,6 +19,22 @@ export default function ContactScreen() {
     const goToAddContact = () => {
         navigation.navigate('AddContact');
     }
+
+    const updateRecipients = async () => {
+        setIsCharging(true);
+
+        const res = await getRecipients();
+
+        if (res) {
+            setRecipients(res);
+        }
+
+        setIsCharging(false);
+    }
+
+    useEffect(() => {
+        updateRecipients();
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -28,17 +48,28 @@ export default function ContactScreen() {
                         Contactos
                     </Text>
                 </View>
-                <EvilIcons name="refresh" size={40} color={'grey'} />
+                <TouchableOpacity onPress={updateRecipients}>
+                    <EvilIcons name="refresh" size={40} color={'grey'} />
+                </TouchableOpacity>
             </View>
 
             <View>
                 <Text style={styles.contact_title}>Tus contactos</Text>
-                <Text>Elige el destinatario</Text>
+                <Text style={main.mb_16}>Elige el destinatario</Text>
 
-                <View style={[main.flex, main.flex_row, main.align_center, main.gap_16, main.mt_16]}>
-                    <Text style={[styles.contact_icon, main.bg_black, main.color_white]}>N</Text>
-                    <Text>Nizvan nu</Text>
-                </View>
+                {isCharging && (
+                    <View style={styles.charging_view}>
+                        <ActivityIndicator color='black' size='small' />
+                        <Text>Cargando destinatarios...</Text>
+                    </View>
+                )}
+
+                {!isCharging && recipients.map(recipient => (
+                    <TouchableOpacity key={recipient.id} style={[main.flex, main.flex_row, main.align_center, main.gap_16, main.mt_16]}>
+                        <Text style={[styles.contact_icon, main.bg_black, main.color_white]}>{recipient.data().name[0]}</Text>
+                        <Text>{recipient.data().name}</Text>
+                    </TouchableOpacity>
+                ))}
             </View>
 
             <TouchableOpacity style={styles.button} onPress={goToAddContact}>
@@ -85,5 +116,12 @@ const styles = StyleSheet.create({
     button_text: {
         textAlign: 'center',
         color: 'white'
+    },
+    charging_view: {
+        display: 'flex',
+        flexDirection: 'row',
+        gap: 8,
+        marginTop: 16,
+        alignItems: 'center'
     }
 });
