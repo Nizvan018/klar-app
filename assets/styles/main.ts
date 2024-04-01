@@ -22,6 +22,9 @@ export const main = StyleSheet.create({
     mt_16: {
         marginTop: 16
     },
+    mb_16: {
+        marginBottom: 16
+    },
     gap_16: {
         gap: 16
     },
