@@ -4,7 +4,7 @@ import { useUser } from "@/context/AuthContext";
 import { logout } from "@/api/auth";
 
 export default function Header() {
-    const user = useUser();
+    const { user } = useUser();
 
     return (
         <View style={[styles.header, styles.flex, styles.flex_row]}>

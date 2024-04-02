@@ -10,7 +10,7 @@ import CreditCard from './CreditCard';
 import MovementsSection from './MovementsSection';
 
 export default function HomeScreen() {
-    const user = useUser();
+    const { user } = useUser();
     const [componentsOrder, setComponentsOrder] = useState(true);
 
     const onPress = () => {

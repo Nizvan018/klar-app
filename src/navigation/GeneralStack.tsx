@@ -6,11 +6,12 @@ import IsNotYouScreen from "@/screens/auth/IsNotYouScreen";
 import GeneralTab from "./GeneralTabs";
 import ContactScreen from "@/screens/transfer/ContactScreen";
 import AddContactScreen from "@/screens/transfer/AddContactScreen";
+import TrasnferScreen from "@/screens/transfer/TrasnferScreen";
 
 const GeneralStackNavigator = createNativeStackNavigator();
 
 export default function GeneralStack() {
-    const user = useUser();
+    const { user } = useUser();
 
     return (
         <GeneralStackNavigator.Navigator
@@ -25,6 +26,7 @@ export default function GeneralStack() {
                     <GeneralStackNavigator.Screen name="General" component={GeneralTab} />
                     <GeneralStackNavigator.Screen name="Contact" component={ContactScreen} />
                     <GeneralStackNavigator.Screen name="AddContact" component={AddContactScreen} />
+                    <GeneralStackNavigator.Screen name="Transfer" component={TrasnferScreen} />
                 </>
             ) : (
                 <>

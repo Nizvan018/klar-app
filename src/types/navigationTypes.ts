@@ -4,4 +4,5 @@ export type RootBottomParamList = {
     Login: { id: number } | undefined;
     Contact: { id: number } | undefined;
     AddContact: { id: number } | undefined;
+    Transfer: { id?: number, contacto: string } | undefined;
 }

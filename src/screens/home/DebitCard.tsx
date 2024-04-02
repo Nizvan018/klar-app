@@ -3,6 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons, FontAwesome6, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import Card from "@/components/Card";
 import CircleButton from "@/components/inputs/CircleButton";
+import { useUser } from "@/context/AuthContext";
 
 import { main } from "@assets/styles/main";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -14,6 +15,7 @@ interface Props {
 
 export default function DebitCard({ disabled }: Props) {
     const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();;
+    const { account } = useUser();
 
     const goToTransfer = () => {
         navigation.navigate('Contact');
@@ -28,8 +30,8 @@ export default function DebitCard({ disabled }: Props) {
                 </View>
                 <View style={[main.flex, main.flex_row, main.mt_16]}>
                     <Text style={[styles.dolar, disabled]}>$</Text>
-                    <Text style={[styles.dolar, disabled]}>500</Text>
-                    <Text style={disabled}>00</Text>
+                    <Text style={[styles.dolar, disabled]}>{Math.floor(account.amount)}</Text>
+                    <Text style={disabled}>{(account.amount % 1).toFixed(2).split('.')[1]}</Text>
                 </View>
                 <View style={[main.flex, main.flex_row, main.align_center, main.gap_16, main.mt_16]}>
                     <Feather name='trending-up' size={20} color={'black'} />

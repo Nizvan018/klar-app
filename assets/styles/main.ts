@@ -4,6 +4,9 @@ export const main = StyleSheet.create({
     flex: {
         display: 'flex'
     },
+    flex1: {
+        flex: 1
+    },
     flex_row: {
         flexDirection: 'row'
     },

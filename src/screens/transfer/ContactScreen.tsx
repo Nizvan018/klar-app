@@ -6,11 +6,13 @@ import { useEffect, useState } from "react";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootBottomParamList } from "@/types/navigationTypes";
 import { getRecipients } from "@/api/recipients";
+import { useUser } from "@/context/AuthContext";
 
 export default function ContactScreen() {
     const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();
     const [recipients, setRecipients] = useState(Array());
     const [isCharging, setIsCharging] = useState(true);
+    const { user } = useUser();
 
     const goBack = () => {
         navigation.goBack();
@@ -20,10 +22,14 @@ export default function ContactScreen() {
         navigation.navigate('AddContact');
     }
 
+    const goToTransfer = (contacto: string) => {
+        navigation.navigate('Transfer', { contacto: contacto });
+    }
+
     const updateRecipients = async () => {
         setIsCharging(true);
 
-        const res = await getRecipients();
+        const res = await getRecipients(user?.uid);
 
         if (res) {
             setRecipients(res);
@@ -65,7 +71,7 @@ export default function ContactScreen() {
                 )}
 
                 {!isCharging && recipients.map(recipient => (
-                    <TouchableOpacity key={recipient.id} style={[main.flex, main.flex_row, main.align_center, main.gap_16, main.mt_16]}>
+                    <TouchableOpacity key={recipient.id} onPress={() => goToTransfer(recipient.data().name)} style={[main.flex, main.flex_row, main.align_center, main.gap_16, main.mt_16]}>
                         <Text style={[styles.contact_icon, main.bg_black, main.color_white]}>{recipient.data().name[0]}</Text>
                         <Text>{recipient.data().name}</Text>
                     </TouchableOpacity>

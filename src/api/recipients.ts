@@ -4,9 +4,9 @@ import { Recipient } from "@/types/database.type";
 import Toast from "react-native-toast-message";
 
 // Method to query recipients from database:
-export const getRecipients = async () => {
+export const getRecipients = async (user_id: string | undefined) => {
     try {
-        const docs = await getDocs(collection(DB, 'recipient'));
+        const docs = await getDocs(query(collection(DB, 'recipient'), where("user_id", "==", user_id)));
         let recipients = new Array();
 
         docs.forEach(doc => {
