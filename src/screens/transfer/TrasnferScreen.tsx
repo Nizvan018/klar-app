@@ -27,7 +27,7 @@ export default function TrasnferScreen({ route }: Props) {
     }
 
     const onSubmit = handleSubmit((data) => {
-        navigation.navigate('Message', { contacto: contacto, amount: data.amount });
+        navigation.navigate('Message', { contacto: contacto, amount: Number(data.amount).toFixed(2) });
     });
 
     const handleInputChange = (text: string) => {
