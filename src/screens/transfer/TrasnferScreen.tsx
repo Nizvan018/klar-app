@@ -36,7 +36,7 @@ export default function TrasnferScreen({ route }: Props) {
                 <View style={[main.flex, main.align_center]}>
                     <View style={[main.flex, main.flex_row, main.align_center]}>
                         <Text style={styles.quantity}>$</Text>
-                        <TextInput value="0" style={styles.quantity} keyboardType="number-pad" />
+                        <TextInput style={styles.quantity} keyboardType="number-pad" selectionColor={'black'} />
                     </View>
                     <Text>${account.amount.toFixed(2)} disponibles para transferir</Text>
                 </View>

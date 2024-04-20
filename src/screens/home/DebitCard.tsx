@@ -30,8 +30,8 @@ export default function DebitCard({ disabled }: Props) {
                 </View>
                 <View style={[main.flex, main.flex_row, main.mt_16]}>
                     <Text style={[styles.dolar, disabled]}>$</Text>
-                    <Text style={[styles.dolar, disabled]}>{Math.floor(account.amount)}</Text>
-                    <Text style={disabled}>{(account.amount % 1).toFixed(2).split('.')[1]}</Text>
+                    <Text style={[styles.dolar, disabled]}>{Math.floor(account?.amount)}</Text>
+                    <Text style={disabled}>{(account?.amount % 1).toFixed(2).split('.')[1]}</Text>
                 </View>
                 <View style={[main.flex, main.flex_row, main.align_center, main.gap_16, main.mt_16]}>
                     <Feather name='trending-up' size={20} color={'black'} />

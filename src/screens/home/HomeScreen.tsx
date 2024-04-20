@@ -10,7 +10,7 @@ import CreditCard from './CreditCard';
 import MovementsSection from './MovementsSection';
 
 export default function HomeScreen() {
-    const { user } = useUser();
+    const { user, account } = useUser();
     const [componentsOrder, setComponentsOrder] = useState(true);
 
     const onPress = () => {
@@ -18,26 +18,32 @@ export default function HomeScreen() {
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <Header />
-            <ToggleSwitch onPress={onPress} />
+        <>
+            {account ? (
+                <ScrollView style={styles.container}>
+                    <Header />
+                    <ToggleSwitch onPress={onPress} />
 
-            <View>
-                {componentsOrder ? (
-                    <>
-                        <DebitCard />
-                        <CreditCard disabled={{ color: 'gray' }} />
-                    </>
-                ) : (
-                    <>
-                        <CreditCard />
-                        <DebitCard disabled={{ color: 'gray' }} />
-                    </>
-                )}
-            </View>
+                    <View>
+                        {componentsOrder ? (
+                            <>
+                                <DebitCard />
+                                <CreditCard disabled={{ color: 'gray' }} />
+                            </>
+                        ) : (
+                            <>
+                                <CreditCard />
+                                <DebitCard disabled={{ color: 'gray' }} />
+                            </>
+                        )}
+                    </View>
 
-            <MovementsSection />
-        </ScrollView>
+                    <MovementsSection />
+                </ScrollView>
+            ) : (
+                <View></View>
+            )}
+        </>
     );
 }
 
