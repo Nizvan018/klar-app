@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, KeyboardType } from 'react-native';
 import { Controller } from 'react-hook-form';
 import { TextInput } from 'react-native-paper';
 
@@ -16,9 +16,10 @@ interface Props {
     activeOutlineColor?: string
     max: number
     min: number
+    keyboardType?: KeyboardType
 }
 
-export default function CustomTextInputCounter({ control, name, rules = {}, label, secureTextEntry, mode, outlineColor, activeOutlineColor, placeholder, max, min }: Props) {
+export default function CustomTextInputCounter({ control, name, rules = {}, label, secureTextEntry, mode, outlineColor, activeOutlineColor, placeholder, max, min, keyboardType = 'default' }: Props) {
     return (
         <Controller
             control={control}
@@ -39,6 +40,7 @@ export default function CustomTextInputCounter({ control, name, rules = {}, labe
                         outlineColor={error ? '#e77' : outlineColor}
                         activeOutlineColor={error ? '#e77' : activeOutlineColor}
                         cursorColor='black'
+                        keyboardType={keyboardType}
                     />
                     <Text style={[styles.text, value.length > max || value.length < min ? styles.text_wrong : styles.text_right]}>{value.length}/{max}</Text>
                 </View>

@@ -4,15 +4,22 @@ import { main } from "@assets/styles/main"
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { useUser } from "@/context/AuthContext";
 import { useForm, Controller } from "react-hook-form";
+import { Recipient } from "@/types/database.type";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootBottomParamList } from "@/types/navigationTypes";
 
 interface Props {
     route: RouteProp<{}>
 }
 
+interface Params {
+    contacto: Recipient
+}
+
 export default function TrasnferScreen({ route }: Props) {
     const { control, handleSubmit, formState: { errors } } = useForm();
-    const navigation = useNavigation();
-    const { contacto } = route.params;
+    const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();
+    const { contacto }: Params = route.params;
     const { account } = useUser();
 
     const goBack = () => {
@@ -20,7 +27,7 @@ export default function TrasnferScreen({ route }: Props) {
     }
 
     const onSubmit = handleSubmit((data) => {
-        console.log(data.amount);
+        navigation.navigate('Message', { contacto: contacto, amount: data.amount });
     });
 
     const handleInputChange = (text: string) => {
@@ -51,7 +58,7 @@ export default function TrasnferScreen({ route }: Props) {
 
             {/* CONTENT */}
             <View style={styles.content}>
-                <Text style={styles.name}>Transferir a {contacto}</Text>
+                <Text style={styles.name}>Transferir a {contacto.name}</Text>
 
                 <View style={[main.flex, main.align_center]}>
                     <View style={[main.flex, main.flex_row, main.align_center]}>

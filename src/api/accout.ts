@@ -13,6 +13,8 @@ export const getAccout = async (user_id: string | undefined, setAccout: any) => 
                 if (doc.exists()) {
                     setAccout(doc.data());
                 }
+            }, (error) => {
+                console.log(error);
             });
         }
     } catch (e) {
