@@ -1,10 +1,17 @@
 import { Recipient } from '@/types/database.type';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { main } from '@assets/styles/main';
-import { addTransfer } from '@/api/transfers';
+import { addTransfer, getTransfer } from '@/api/transfers';
 import { Transfer } from '@/types/database.type';
 import { useUser } from '@/context/AuthContext';
 import { updateAccount, updateAccountWithNumber } from '@/api/accout';
+import ConfirmCard from './ConfirmCard';
+import { useEffect, useState } from 'react';
+import TransferCard from './TransferCard';
+import { DocumentData, DocumentReference } from 'firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootBottomParamList } from '@/types/navigationTypes';
 
 interface Props {
     isModalVisible: boolean
@@ -18,6 +25,9 @@ interface Props {
 
 export default function MessageModal({ isModalVisible, setIsModalVisible, contact, amount, concept, reference, setData }: Props) {
     const { user, account } = useUser();
+    const [itsDone, setItsDone] = useState(false);
+    const [transferData, setTransferData] = useState({});
+    const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();
 
     const makeTransaction = async () => {
         const transfer: Transfer = {
@@ -33,120 +43,50 @@ export default function MessageModal({ isModalVisible, setIsModalVisible, contac
         const res_transfer = await addTransfer(transfer);
 
         console.log(res_update, res_transfer, res_recipient);
+
+        if (res_transfer != false) {
+            const data = await getTransfer(res_transfer);
+
+            if (data) {
+                setTransferData(data);
+            }
+        }
+
+        setIsModalVisible(false);
+        setItsDone(true);
     }
+
+    const finish = () => {
+        navigation.navigate('General');
+    }
+
+    const closeModal = () => {
+        if (!itsDone) {
+            setIsModalVisible(false)
+            setData({});
+        } else {
+            navigation.navigate('General');
+        }
+    }
+
+    useEffect(() => {
+        if (itsDone) {
+            setIsModalVisible(true);
+        }
+    }, [itsDone]);
 
     return (
         <Modal
             visible={isModalVisible}
-            onRequestClose={() => { setIsModalVisible(false); setData({}) }}
+            onRequestClose={closeModal}
             animationType='slide'
             transparent={true}
         >
-            <View style={styles.container}>
-                <View style={styles.card}>
-                    <Text style={styles.title}>Confirmar la transferencia {contact.numberType}</Text>
-
-                    <View style={styles.inner_card}>
-                        <Text style={[main.color_primary, styles.inner_title]}>Mandar dinero vía Klar</Text>
-                        <View style={styles.row}>
-                            <Text>Monto</Text>
-                            <Text style={styles.text_gray}>${amount}</Text>
-                        </View>
-                        <View style={styles.row}>
-                            <Text>Destinatario</Text>
-                            <Text style={styles.text_gray}>{contact.name}</Text>
-                        </View>
-                        <View style={[main.mb_16, styles.row]}>
-                            <Text>{contact.numberType}</Text>
-                            <Text style={styles.text_gray}>{contact.number}</Text>
-                        </View>
-                    </View>
-
-                    <Text style={styles.advicement}>Transferencias protegidas por tu dispositivo de confianza y su segundo factor de autenticación</Text>
-
-                    <TouchableOpacity onPress={makeTransaction} style={styles.primary_button}>
-                        <Text style={styles.primary_button_text}>Enviar dinero</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => { setIsModalVisible(false); setData({}); }} style={styles.secondary_button}>
-                        <Text style={styles.secondary_button_text}>Cerrar</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+            {!itsDone ? (
+                <ConfirmCard setIsModalVisible={setIsModalVisible} makeTransaction={makeTransaction} setData={setData} contact={contact} amount={amount} />
+            ) : (
+                <TransferCard finish={finish} contact={contact} data={transferData} />
+            )}
         </Modal>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        position: 'relative',
-        height: '100%',
-        backgroundColor: 'transparent'
-    },
-    card: {
-        position: 'absolute',
-        bottom: 0,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        height: '58%',
-        width: '100%',
-        padding: 16,
-        borderRadius: 16,
-        backgroundColor: 'white'
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: '700',
-        marginBottom: 48
-    },
-    inner_card: {
-        display: 'flex',
-        gap: 8,
-        width: '100%',
-        borderRadius: 16,
-        padding: 16,
-        marginBottom: 16,
-        backgroundColor: '#eee'
-    },
-    inner_title: {
-        fontWeight: '700',
-        fontSize: 16,
-        marginBottom: 8
-    },
-    row: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-    text_gray: {
-        color: 'gray'
-    },
-    advicement: {
-        fontSize: 12,
-        color: 'gray',
-        marginBottom: 16
-    },
-    primary_button: {
-        width: '100%',
-        marginBottom: 12,
-        borderRadius: 8,
-        paddingVertical: 18,
-        backgroundColor: '#222'
-    },
-    secondary_button: {
-        width: '100%',
-        marginBottom: 20,
-        borderRadius: 8,
-        paddingVertical: 18,
-        backgroundColor: 'transparent'
-    },
-    primary_button_text: {
-        textAlign: 'center',
-        color: 'white'
-    },
-    secondary_button_text: {
-        textAlign: 'center',
-        color: 'black'
-    }
-});
