@@ -22,6 +22,7 @@ export default function MessageScreen({ route }: Props) {
     const { control, handleSubmit, formState: { errors }, setValue } = useForm();
     const navigation = useNavigation();
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [data, setData] = useState({});
 
     const goBack = () => {
         navigation.goBack();
@@ -29,6 +30,7 @@ export default function MessageScreen({ route }: Props) {
 
     const onSubmit = handleSubmit((data) => {
         console.log(data.message, data.reference);
+        setData(data);
         setIsModalVisible(true);
     });
 
@@ -97,7 +99,7 @@ export default function MessageScreen({ route }: Props) {
                     <Text style={styles.button_text}>Validar transferencia</Text>
                 </TouchableOpacity>
 
-                <MessageModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} contact={contacto} amount={amount} />
+                <MessageModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} contact={contacto} amount={amount} concept={data.message} reference={data.reference} setData={setData} />
             </View>
             <View style={[isModalVisible ? { opacity: 1, zIndex: 50 } : { opacity: 0, zIndex: 0 }, { position: 'absolute', width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.3)' }]}></View>
         </>

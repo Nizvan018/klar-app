@@ -1,0 +1,52 @@
+import { addDoc, collection, doc, getDoc, getDocs, onSnapshot, query, serverTimestamp, where } from "firebase/firestore";
+import { DB } from "firebase-config";
+import { Transfer } from "@/types/database.type";
+import Toast from "react-native-toast-message";
+
+// Method to query transfers from database:
+export const getTransfer = async (accountNumber: number) => {
+    try {
+        const docs = await getDocs(query(collection(DB, 'transfer'), where("transmitter", "==", accountNumber)));
+        const transfers = new Array();
+
+        docs.forEach(doc => {
+            transfers.push(doc);
+        });
+
+        return transfers;
+    } catch (e) {
+        console.log(e);
+
+        Toast.show({
+            type: 'error',
+            text1: 'Sucedió un error inesperado, intente más tarde'
+        });
+
+        return false;
+    }
+}
+
+// Method to add transfers to the database:
+export const addTransfer = async (transfer: Transfer) => {
+    try {
+        const docRef = await addDoc(collection(DB, "transfer"), {
+            transmitter: transfer.transmitter,
+            recipient: transfer.recipient,
+            amount: transfer.amount,
+            concept: transfer.concept,
+            ...(transfer.reference && { reference: transfer.reference }),
+            date: serverTimestamp()
+        });
+
+        return true;
+    } catch (e) {
+        console.log(e);
+
+        Toast.show({
+            type: 'error',
+            text1: 'Sucedió un error inesperado, intente más tarde'
+        })
+
+        return false;
+    }
+}

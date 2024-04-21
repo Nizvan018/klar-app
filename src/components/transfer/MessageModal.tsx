@@ -1,19 +1,44 @@
 import { Recipient } from '@/types/database.type';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { main } from '@assets/styles/main';
+import { addTransfer } from '@/api/transfers';
+import { Transfer } from '@/types/database.type';
+import { useUser } from '@/context/AuthContext';
+import { updateAccount, updateAccountWithNumber } from '@/api/accout';
 
 interface Props {
     isModalVisible: boolean
     setIsModalVisible: (arg: boolean) => void,
     contact: Recipient,
-    amount: number
+    amount: number,
+    concept: string,
+    reference?: number
+    setData: (arg: {}) => void
 }
 
-export default function MessageModal({ isModalVisible, setIsModalVisible, contact, amount }: Props) {
+export default function MessageModal({ isModalVisible, setIsModalVisible, contact, amount, concept, reference, setData }: Props) {
+    const { user, account } = useUser();
+
+    const makeTransaction = async () => {
+        const transfer: Transfer = {
+            transmitter: Number(account.clabe),
+            recipient: Number(contact.number),
+            amount: Number(amount),
+            concept: concept,
+            reference: Number(reference)
+        }
+
+        const res_update = await updateAccount(user?.uid, (-amount));
+        const res_recipient = await updateAccountWithNumber(contact.numberType, contact.number, Number(amount));
+        const res_transfer = await addTransfer(transfer);
+
+        console.log(res_update, res_transfer, res_recipient);
+    }
+
     return (
         <Modal
             visible={isModalVisible}
-            onRequestClose={() => setIsModalVisible(false)}
+            onRequestClose={() => { setIsModalVisible(false); setData({}) }}
             animationType='slide'
             transparent={true}
         >
@@ -39,11 +64,11 @@ export default function MessageModal({ isModalVisible, setIsModalVisible, contac
 
                     <Text style={styles.advicement}>Transferencias protegidas por tu dispositivo de confianza y su segundo factor de autenticación</Text>
 
-                    <TouchableOpacity onPress={() => console.log('Confirm')} style={styles.primary_button}>
+                    <TouchableOpacity onPress={makeTransaction} style={styles.primary_button}>
                         <Text style={styles.primary_button_text}>Enviar dinero</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.secondary_button}>
+                    <TouchableOpacity onPress={() => { setIsModalVisible(false); setData({}); }} style={styles.secondary_button}>
                         <Text style={styles.secondary_button_text}>Cerrar</Text>
                     </TouchableOpacity>
                 </View>
