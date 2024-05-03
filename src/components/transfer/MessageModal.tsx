@@ -28,8 +28,11 @@ export default function MessageModal({ isModalVisible, setIsModalVisible, contac
     const [itsDone, setItsDone] = useState(false);
     const [transferData, setTransferData] = useState({});
     const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();
+    const [isCharging, setIsCharging] = useState(false);
 
     const makeTransaction = async () => {
+        setIsCharging(true);
+
         const transfer: Transfer = {
             transmitter: Number(account.clabe),
             recipient: Number(contact.number),
@@ -52,6 +55,7 @@ export default function MessageModal({ isModalVisible, setIsModalVisible, contac
             }
         }
 
+        setIsCharging(false);
         setIsModalVisible(false);
         setItsDone(true);
     }
@@ -83,7 +87,7 @@ export default function MessageModal({ isModalVisible, setIsModalVisible, contac
             transparent={true}
         >
             {!itsDone ? (
-                <ConfirmCard setIsModalVisible={setIsModalVisible} makeTransaction={makeTransaction} setData={setData} contact={contact} amount={amount} />
+                <ConfirmCard setIsModalVisible={setIsModalVisible} makeTransaction={makeTransaction} setData={setData} contact={contact} amount={amount} isCharging={isCharging} />
             ) : (
                 <TransferCard finish={finish} contact={contact} data={transferData} />
             )}

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from "react-native";
 import { main } from "@assets/styles/main";
 import { Recipient } from "@/types/database.type";
 
@@ -8,9 +8,10 @@ interface Props {
     setData: (arg: {}) => void
     contact: Recipient
     amount: number
+    isCharging: boolean
 }
 
-export default function ConfirmCard({ contact, amount, makeTransaction, setIsModalVisible, setData }: Props) {
+export default function ConfirmCard({ contact, amount, makeTransaction, setIsModalVisible, setData, isCharging = false }: Props) {
     return (
         <View style={styles.container}>
             <View style={styles.card}>
@@ -36,6 +37,11 @@ export default function ConfirmCard({ contact, amount, makeTransaction, setIsMod
 
                 <TouchableOpacity onPress={makeTransaction} style={styles.primary_button}>
                     <Text style={styles.primary_button_text}>Enviar dinero</Text>
+                    {isCharging && (
+                        <View>
+                            <ActivityIndicator color={'white'} size='small' />
+                        </View>
+                    )}
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => { setIsModalVisible(false); setData({}); }} style={styles.secondary_button}>
@@ -97,6 +103,10 @@ const styles = StyleSheet.create({
         marginBottom: 16
     },
     primary_button: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: 8,
         width: '100%',
         marginBottom: 12,
         borderRadius: 8,
