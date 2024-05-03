@@ -30,7 +30,13 @@ export const UserProvider = ({ children }: Props) => {
     }, []);
 
     useEffect(() => {
-        getAccout(user?.uid, setAccount);
+        console.log(user);
+
+        if (user) {
+            getAccout(user?.uid, setAccount);
+        } else {
+            setAccount(null);
+        }
     }, [user]);
 
     return (

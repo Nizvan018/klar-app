@@ -3,18 +3,45 @@ import { AntDesign } from '@expo/vector-icons';
 import { main } from "@assets/styles/main"
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { useUser } from "@/context/AuthContext";
+import { useForm, Controller } from "react-hook-form";
+import { Recipient } from "@/types/database.type";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootBottomParamList } from "@/types/navigationTypes";
 
 interface Props {
     route: RouteProp<{}>
 }
 
+interface Params {
+    contacto: Recipient
+}
+
 export default function TrasnferScreen({ route }: Props) {
-    const navigation = useNavigation();
-    const { contacto } = route.params;
+    const { control, handleSubmit, formState: { errors } } = useForm();
+    const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();
+    const { contacto }: Params = route.params;
     const { account } = useUser();
 
     const goBack = () => {
         navigation.goBack();
+    }
+
+    const onSubmit = handleSubmit((data) => {
+        navigation.navigate('Message', { contacto: contacto, amount: Number(data.amount).toFixed(2) });
+    });
+
+    const handleInputChange = (text: string) => {
+        const correctAmount = text.replace(/^0+(?=\d)/, '');
+        const numeric = correctAmount.replace(/[^0-9.]/g, '');
+
+        const regex = /^(\d+)\.(\d{3})$/;
+        const match = numeric.match(regex);
+
+        if (match) {
+            return numeric.slice(0, -1);
+        } else {
+            return numeric;
+        }
     }
 
     return (
@@ -31,17 +58,49 @@ export default function TrasnferScreen({ route }: Props) {
 
             {/* CONTENT */}
             <View style={styles.content}>
-                <Text style={styles.name}>Transferir a {contacto}</Text>
+                <Text style={styles.name}>Transferir a {contacto.name}</Text>
 
                 <View style={[main.flex, main.align_center]}>
                     <View style={[main.flex, main.flex_row, main.align_center]}>
-                        <Text style={styles.quantity}>$</Text>
-                        <TextInput style={styles.quantity} keyboardType="number-pad" selectionColor={'black'} />
+                        <Text style={[styles.quantity, errors?.amount?.type == 'min' || errors?.amount?.type == 'required' ? styles.bad_quantity : {}]}>$</Text>
+                        <Controller
+                            control={control}
+                            name="amount"
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'Por favor, introduzca la cantidad'
+                                },
+                                min: {
+                                    value: 1,
+                                    message: 'La cantidad mínima es de $1 para transferir'
+                                },
+                                max: {
+                                    value: account.amount,
+                                    message: 'Cantidad de dinero no disponible'
+                                }
+                            }}
+                            render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
+                                <>
+                                    <TextInput
+                                        value={value}
+                                        onChangeText={(text) => { onChange(handleInputChange(text)) }}
+                                        onBlur={onBlur}
+                                        style={[styles.quantity, error?.type == 'min' ? styles.bad_quantity : {}]}
+                                        keyboardType="number-pad"
+                                        selectionColor={'black'}
+                                    />
+                                </>
+                            )}
+                        />
                     </View>
-                    <Text>${account.amount.toFixed(2)} disponibles para transferir</Text>
+                    <Text style={errors?.amount?.type == "max" ? styles.bad_quantity : {}}>${account.amount.toFixed(2)} disponibles para transferir</Text>
+                    {errors?.amount?.type == 'min' && (
+                        <Text style={[main.mt_16, styles.bad_quantity]}>{errors.amount.message}</Text>
+                    )}
                 </View>
 
-                <TouchableOpacity style={styles.button} onPress={() => { }}>
+                <TouchableOpacity style={styles.button} onPress={onSubmit}>
                     <Text style={styles.button_text}>Realizar pago</Text>
                 </TouchableOpacity>
             </View>
@@ -73,6 +132,9 @@ const styles = StyleSheet.create({
     },
     quantity: {
         fontSize: 64
+    },
+    bad_quantity: {
+        color: '#f66'
     },
     button: {
         width: '100%',

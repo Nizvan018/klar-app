@@ -7,6 +7,7 @@ import GeneralTab from "./GeneralTabs";
 import ContactScreen from "@/screens/transfer/ContactScreen";
 import AddContactScreen from "@/screens/transfer/AddContactScreen";
 import TrasnferScreen from "@/screens/transfer/TrasnferScreen";
+import MessageScreen from "@/screens/transfer/MessageScreen";
 
 const GeneralStackNavigator = createNativeStackNavigator();
 
@@ -27,6 +28,7 @@ export default function GeneralStack() {
                     <GeneralStackNavigator.Screen name="Contact" component={ContactScreen} />
                     <GeneralStackNavigator.Screen name="AddContact" component={AddContactScreen} />
                     <GeneralStackNavigator.Screen name="Transfer" component={TrasnferScreen} />
+                    <GeneralStackNavigator.Screen name="Message" component={MessageScreen} />
                 </>
             ) : (
                 <>
