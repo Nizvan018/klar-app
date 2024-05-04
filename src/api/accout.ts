@@ -37,7 +37,7 @@ export const updateAccount = async (user_id: string | undefined, amount: number)
             const current = await getDoc(docRef);
 
             if (current.exists()) {
-                const newAmount = current.data().amount + amount;
+                const newAmount = Number(current.data().amount) + Number(amount);
 
                 const updated = updateDoc(docRef, {
                     amount: newAmount

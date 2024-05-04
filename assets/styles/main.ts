@@ -31,6 +31,9 @@ export const main = StyleSheet.create({
     gap_16: {
         gap: 16
     },
+    gap_8: {
+        gap: 8
+    },
     color_primary: {
         color: '#398'
     },

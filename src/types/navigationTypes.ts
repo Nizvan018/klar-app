@@ -8,4 +8,5 @@ export type RootBottomParamList = {
     AddContact: { id: number } | undefined;
     Transfer: { id?: number, contacto: Recipient } | undefined;
     Message: { id?: number, contacto: Recipient, amount: number } | undefined;
+    Deposit: { id: number } | undefined;
 }

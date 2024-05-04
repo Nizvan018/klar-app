@@ -21,6 +21,10 @@ export default function DebitCard({ disabled }: Props) {
         navigation.navigate('Contact');
     }
 
+    const goToDeposit = () => {
+        navigation.navigate('Deposit');
+    }
+
     return (
         <Card>
             <View style={main.p_16}>
@@ -61,7 +65,7 @@ export default function DebitCard({ disabled }: Props) {
                 <CircleButton label='Pagar servicios' action={console.log('')}>
                     <MaterialCommunityIcons name='bank' size={24} />
                 </CircleButton>
-                <CircleButton label='Depositar a la cuenta' action={console.log('')}>
+                <CircleButton label='Depositar a la cuenta' action={goToDeposit}>
                     <MaterialCommunityIcons name='credit-card-plus' size={24} />
                 </CircleButton>
                 <CircleButton label='Más' action={console.log('')}>
