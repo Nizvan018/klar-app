@@ -3,6 +3,10 @@ import { Octicons } from '@expo/vector-icons'
 import SwitchSelector from "react-native-switch-selector";
 import Card from "@/components/Card";
 import { main } from "@assets/styles/main";
+import { useEffect, useState } from "react";
+import { getUserTransfers } from "@/api/transfers";
+import { useUser } from "@/context/AuthContext";
+import { Transfer } from "@/types/database.type";
 
 const options = [
     { label: 'Todos', value: 0 },
@@ -11,6 +15,23 @@ const options = [
 ];
 
 export default function MovementsSection() {
+    const { account } = useUser();
+    const [movements, setMovements] = useState(Array<Transfer>());
+
+    const fetch = async () => {
+        if (account) {
+            const transfers = await getUserTransfers(Number(account.clabe));
+
+            if (transfers) {
+                setMovements(transfers);
+            }
+        }
+    }
+
+    useEffect(() => {
+        fetch();
+    }, [account]);
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Movimientos</Text>
@@ -31,16 +52,18 @@ export default function MovementsSection() {
 
             <Text>Más en este mes</Text>
 
-            <Card>
-                <View style={[main.flex, main.flex_row, main.align_center, main.space_between, main.p_16]}>
-                    <Octicons name="checklist" size={24} />
-                    <View>
-                        <Text>Pago semanl de intereses</Text>
-                        <Text style={[styles.date, main.color_gray]}>17 feb</Text>
+            {movements.map((movement, index) => (
+                <Card key={index}>
+                    <View style={[main.flex, main.flex_row, main.align_center, main.space_between, main.p_16]}>
+                        <Octicons name="checklist" size={24} />
+                        <View>
+                            <Text>Pago semanal de intereses</Text>
+                            <Text style={[styles.date, main.color_gray]}>{`${movement.date?.toDate().getDate()} ${movement.date?.toDate().toLocaleDateString('es-ES', { month: 'long' })}`}</Text>
+                        </View>
+                        <Text style={main.color_primary}>${(movement.amount).toFixed(2)}</Text>
                     </View>
-                    <Text style={main.color_primary}>$1.53</Text>
-                </View>
-            </Card>
+                </Card>
+            ))}
         </View>
     )
 }
