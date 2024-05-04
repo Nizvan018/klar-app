@@ -2,6 +2,7 @@ import { FIREBASE_AUTH } from "firebase-config";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { getAccout } from "@/api/accout";
+import { Account } from "@/types/database.type";
 
 interface Props {
     children: ReactNode;
@@ -9,7 +10,7 @@ interface Props {
 
 type UserContextType = {
     user: User | null
-    account: any
+    account: Account | null
     setAccount: any
 }
 
