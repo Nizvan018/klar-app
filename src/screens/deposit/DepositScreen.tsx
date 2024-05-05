@@ -42,7 +42,7 @@ export default function DepositScreen() {
             transmitter: 0,
             recipient: Number(account?.clabe),
             amount: Number(data.amount),
-            concept: "Deposit",
+            concept: "Depósito a mi cuenta",
             reference: 1234567
         }
 

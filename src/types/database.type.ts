@@ -20,5 +20,6 @@ export interface Transfer {
     amount: number
     concept: string
     reference?: number
-    date?: Timestamp
+    date: Timestamp
+    type: 1 | 2
 }

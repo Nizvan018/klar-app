@@ -45,9 +45,8 @@ export const getTransfers = async (accountNumber: number) => {
 }
 
 // Method to query transfers with user id from database:
-export const getUserTransfers = async (accountNumber: number) => {
+export const getUserTransfers = async (accountNumber: number, setMovements: any) => {
     try {
-        const date = new Date();
         const q = query(collection(DB, 'transfer'),
             or(
                 where("transmitter", "==", accountNumber),
@@ -57,14 +56,19 @@ export const getUserTransfers = async (accountNumber: number) => {
             limit(20)
         );
 
-        const docs = await getDocs(q);
-        const transfers = new Array();
+        // const docs = await getDocs(q);
 
-        docs.forEach(doc => {
-            transfers.push(doc.data());
+        const unsuscribe = onSnapshot(q, (docs) => {
+            const transfers = new Array();
+
+            docs.forEach(doc => {
+                transfers.push(doc.data());
+            });
+
+            setMovements(transfers);
+        }, (error) => {
+            console.log(error);
         });
-
-        return transfers;
     } catch (e) {
         console.log(e);
 
@@ -87,7 +91,8 @@ export const addTransfer = async (transfer: Transfer) => {
             amount: transfer.amount,
             concept: transfer.concept,
             ...(transfer.reference && { reference: transfer.reference }),
-            date: serverTimestamp()
+            date: serverTimestamp(),
+            type: transfer.type
         });
 
         return docRef;
