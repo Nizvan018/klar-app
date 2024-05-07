@@ -1,4 +1,4 @@
-import { DocumentReference, addDoc, collection, doc, getDoc, getDocs, onSnapshot, query, serverTimestamp, where } from "firebase/firestore";
+import { DocumentReference, addDoc, collection, doc, getDoc, getDocs, limit, onSnapshot, or, orderBy, query, serverTimestamp, where } from "firebase/firestore";
 import { DB } from "firebase-config";
 import { Transfer } from "@/types/database.type";
 import Toast from "react-native-toast-message";
@@ -44,6 +44,44 @@ export const getTransfers = async (accountNumber: number) => {
     }
 }
 
+// Method to query transfers with user id from database:
+export const getUserTransfers = async (accountNumber: number, setMovements: any) => {
+    try {
+        const q = query(collection(DB, 'transfer'),
+            or(
+                where("transmitter", "==", accountNumber),
+                where("recipient", "==", accountNumber)
+            ),
+            orderBy("date", "desc"),
+            limit(20)
+        );
+
+        // const docs = await getDocs(q);
+
+        const unsuscribe = onSnapshot(q, (docs) => {
+            const transfers = new Array();
+
+            docs.forEach(doc => {
+                transfers.push(doc.data());
+            });
+
+            setMovements(transfers);
+        }, (error) => {
+            console.log(error);
+        });
+    } catch (e) {
+        console.log(e);
+
+        Toast.show({
+            type: 'error',
+            text1: 'Sucedió un error inesperado, intente más tarde'
+        });
+
+        return false;
+    }
+
+}
+
 // Method to add transfers to the database:
 export const addTransfer = async (transfer: Transfer) => {
     try {
@@ -53,7 +91,8 @@ export const addTransfer = async (transfer: Transfer) => {
             amount: transfer.amount,
             concept: transfer.concept,
             ...(transfer.reference && { reference: transfer.reference }),
-            date: serverTimestamp()
+            date: serverTimestamp(),
+            type: transfer.type
         });
 
         return docRef;

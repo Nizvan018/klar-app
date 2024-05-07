@@ -34,11 +34,12 @@ export default function MessageModal({ isModalVisible, setIsModalVisible, contac
         setIsCharging(true);
 
         const transfer: Transfer = {
-            transmitter: Number(account.clabe),
+            transmitter: Number(account?.clabe),
             recipient: Number(contact.number),
             amount: Number(amount),
             concept: concept,
-            reference: Number(reference)
+            reference: Number(reference),
+            type: 1
         }
 
         const res_update = await updateAccount(user?.uid, (-amount));

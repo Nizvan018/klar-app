@@ -19,6 +19,9 @@ export const main = StyleSheet.create({
     justify_center: {
         justifyContent: 'center'
     },
+    w_full: {
+        width: '100%'
+    },
     p_16: {
         padding: 16
     },

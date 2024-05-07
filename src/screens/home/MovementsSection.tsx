@@ -3,6 +3,10 @@ import { Octicons } from '@expo/vector-icons'
 import SwitchSelector from "react-native-switch-selector";
 import Card from "@/components/Card";
 import { main } from "@assets/styles/main";
+import { useEffect, useState } from "react";
+import { getUserTransfers } from "@/api/transfers";
+import { useUser } from "@/context/AuthContext";
+import { Transfer } from "@/types/database.type";
 
 const options = [
     { label: 'Todos', value: 0 },
@@ -11,6 +15,20 @@ const options = [
 ];
 
 export default function MovementsSection() {
+    const { account } = useUser();
+    const [movements, setMovements] = useState(Array<Transfer>());
+    const [movementType, setMovementType] = useState(1);
+
+    const fetch = async () => {
+        if (account) {
+            getUserTransfers(Number(account.clabe), setMovements);
+        }
+    }
+
+    useEffect(() => {
+        fetch();
+    }, [account]);
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Movimientos</Text>
@@ -25,21 +43,36 @@ export default function MovementsSection() {
                     backgroundColor={'transparent'}
                     animationDuration={300}
                     height={24}
-                    onPress={(value: number) => console.log(value)}
+                    onPress={(value: number) => setMovementType(value)}
                 />
             </View>
 
-            <Text>Más en este mes</Text>
+            {/* <Text>Más en este mes</Text> */}
 
             <Card>
-                <View style={[main.flex, main.flex_row, main.align_center, main.space_between, main.p_16]}>
-                    <Octicons name="checklist" size={24} />
-                    <View>
-                        <Text>Pago semanl de intereses</Text>
-                        <Text style={[styles.date, main.color_gray]}>17 feb</Text>
-                    </View>
-                    <Text style={main.color_primary}>$1.53</Text>
-                </View>
+                {movements.map((movement, index) => (
+                    movementType == 0 ? (
+                        <View key={index} style={[main.flex, main.flex_row, main.align_center, main.space_between, main.gap_16, main.p_16]}>
+                            <Octicons name="checklist" size={24} />
+                            <View style={[main.flex1]}>
+                                <Text>{movement.concept}</Text>
+                                <Text style={[styles.date, main.color_gray]}>{movement.date ? `${movement.date.toDate().getDate()} ${movement.date.toDate().toLocaleDateString('es-ES', { month: 'long' })}` : ''}</Text>
+                            </View>
+                            <Text style={main.color_primary}>${(movement.amount).toFixed(2)}</Text>
+                        </View>
+                    ) : (
+                        movementType == movement.type && (
+                            <View key={index} style={[main.flex, main.flex_row, main.align_center, main.space_between, main.gap_16, main.p_16]}>
+                                <Octicons name="checklist" size={24} />
+                                <View style={[main.flex1]}>
+                                    <Text>{movement.concept}</Text>
+                                    <Text style={[styles.date, main.color_gray]}>{movement.date ? `${movement.date?.toDate().getDate()} ${movement.date?.toDate().toLocaleDateString('es-ES', { month: 'long' })}` : ''}</Text>
+                                </View>
+                                <Text style={main.color_primary}>${(movement.amount).toFixed(2)}</Text>
+                            </View>
+                        )
+                    )
+                ))}
             </Card>
         </View>
     )
