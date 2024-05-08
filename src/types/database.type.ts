@@ -11,7 +11,7 @@ export interface Account {
     name: string,
     clabe: string,
     card_number: string,
-    account: number
+    amount: number
 }
 
 export interface Transfer {

@@ -43,7 +43,8 @@ export default function DepositScreen() {
             recipient: Number(account?.clabe),
             amount: Number(data.amount),
             concept: "Depósito a mi cuenta",
-            reference: 1234567
+            reference: 1234567,
+            type: 1
         }
 
         const res_update = await updateAccount(user?.uid, Number(data.amount));

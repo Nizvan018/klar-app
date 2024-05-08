@@ -16,8 +16,14 @@ export const main = StyleSheet.create({
     align_center: {
         alignItems: 'center'
     },
+    align_start: {
+        alignItems: 'flex-start'
+    },
     justify_center: {
         justifyContent: 'center'
+    },
+    justify_end: {
+        justifyContent: 'flex-end'
     },
     w_full: {
         width: '100%'
@@ -31,11 +37,17 @@ export const main = StyleSheet.create({
     mb_16: {
         marginBottom: 16
     },
+    gap_32: {
+        gap: 32
+    },
     gap_16: {
         gap: 16
     },
     gap_8: {
         gap: 8
+    },
+    bold: {
+        fontWeight: '700'
     },
     color_primary: {
         color: '#398'

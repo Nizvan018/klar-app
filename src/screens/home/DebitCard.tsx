@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextStyle } from "react-native";
+import { View, Text, StyleSheet, TextStyle, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons, FontAwesome6, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import Card from "@/components/Card";
@@ -25,6 +25,10 @@ export default function DebitCard({ disabled }: Props) {
         navigation.navigate('Deposit');
     }
 
+    const goToDetails = () => {
+        navigation.navigate('Details');
+    }
+
     return (
         <Card>
             <View style={main.p_16}>
@@ -34,8 +38,8 @@ export default function DebitCard({ disabled }: Props) {
                 </View>
                 <View style={[main.flex, main.flex_row, main.mt_16]}>
                     <Text style={[styles.dolar, disabled]}>$</Text>
-                    <Text style={[styles.dolar, disabled]}>{Math.floor(account?.amount)}</Text>
-                    <Text style={disabled}>{(account?.amount % 1).toFixed(2).split('.')[1]}</Text>
+                    <Text style={[styles.dolar, disabled]}>{account?.amount && Math.floor(account?.amount)}</Text>
+                    <Text style={disabled}>{account?.amount && (account?.amount % 1).toFixed(2).split('.')[1]}</Text>
                 </View>
                 <View style={[main.flex, main.flex_row, main.align_center, main.gap_16, main.mt_16]}>
                     <Feather name='trending-up' size={20} color={'black'} />
@@ -45,7 +49,7 @@ export default function DebitCard({ disabled }: Props) {
 
             <View style={styles.divider}></View>
 
-            <View style={[main.flex, main.flex_row, main.space_between, main.align_center, main.p_16]}>
+            <TouchableOpacity onPress={goToDetails} style={[main.flex, main.flex_row, main.space_between, main.align_center, main.p_16]}>
                 <View style={[main.flex, main.flex_row, main.align_center, main.gap_16]}>
                     <MaterialIcons name='savings' size={24} />
                     <View>
@@ -54,7 +58,7 @@ export default function DebitCard({ disabled }: Props) {
                     </View>
                 </View>
                 <Text>$500.00</Text>
-            </View>
+            </TouchableOpacity>
 
             <View style={styles.divider}></View>
 
@@ -68,7 +72,7 @@ export default function DebitCard({ disabled }: Props) {
                 <CircleButton label='Depositar a la cuenta' action={goToDeposit}>
                     <MaterialCommunityIcons name='credit-card-plus' size={24} />
                 </CircleButton>
-                <CircleButton label='Más' action={console.log('')}>
+                <CircleButton label='Más' action={goToDetails}>
                     <Feather name='more-horizontal' size={24} />
                 </CircleButton>
             </View>
