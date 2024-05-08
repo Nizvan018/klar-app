@@ -10,4 +10,5 @@ export type RootBottomParamList = {
     Message: { id?: number, contacto: Recipient, amount: number } | undefined;
     Deposit: { id: number } | undefined;
     Details: { id: number } | undefined;
+    Earnings: { id: number } | undefined;
 }

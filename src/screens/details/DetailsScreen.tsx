@@ -24,6 +24,10 @@ export default function DetailsScreen() {
         navigation.navigate('Deposit');
     }
 
+    const goToEarnings = () => {
+        navigation.navigate('Earnings');
+    }
+
     return (
         <View style={styles.container}>
             {/* HEADER */}
@@ -57,23 +61,25 @@ export default function DetailsScreen() {
             </View>
 
             {/* EARNINGS */}
-            <Card>
-                <View style={[main.flex, main.p_16, main.gap_8]}>
-                    <View style={[main.flex, main.flex_row, main.space_between]}>
-                        <Text style={[main.color_primary, main.bold]}>Ganancias</Text>
-                        <TouchableOpacity>
-                            <Text style={[main.color_primary, main.bold]}>
-                                Detalles
-                            </Text>
-                        </TouchableOpacity>
+            <TouchableOpacity onPress={goToEarnings}>
+                <Card>
+                    <View style={[main.flex, main.p_16, main.gap_8]}>
+                        <View style={[main.flex, main.flex_row, main.space_between]}>
+                            <Text style={[main.color_primary, main.bold]}>Ganancias</Text>
+                            <TouchableOpacity>
+                                <Text style={[main.color_primary, main.bold]}>
+                                    Detalles
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                        <Text style={styles.dolar_min}>$0.91</Text>
+                        <View style={[main.flex, main.flex_row, main.gap_16]}>
+                            <Feather name='trending-up' size={20} color={'black'} />
+                            <Text>Historial de ganancias en tu Cuenta</Text>
+                        </View>
                     </View>
-                    <Text style={styles.dolar_min}>$0.91</Text>
-                    <View style={[main.flex, main.flex_row, main.gap_16]}>
-                        <Feather name='trending-up' size={20} color={'black'} />
-                        <Text>Historial de ganancias en tu Cuenta</Text>
-                    </View>
-                </View>
-            </Card>
+                </Card>
+            </TouchableOpacity>
 
             {/* BUTTONS */}
             <View style={[main.flex, main.flex_row, main.align_start, main.gap_32, main.p_16]}>
