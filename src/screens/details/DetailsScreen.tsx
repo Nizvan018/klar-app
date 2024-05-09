@@ -28,6 +28,10 @@ export default function DetailsScreen() {
         navigation.navigate('Earnings');
     }
 
+    const goToInvestments = () => {
+        navigation.navigate('Investments');
+    }
+
     return (
         <View style={styles.container}>
             {/* HEADER */}
@@ -95,20 +99,22 @@ export default function DetailsScreen() {
             </View>
 
             {/* INVESTMENT */}
-            <Card>
-                <View style={[main.flex, main.gap_16, main.p_16]}>
-                    <Text>1 inversión</Text>
-                    <View>
-                        <Text style={styles.dolar_min}>$506.23</Text>
-                        <Text>109 días para cerrar 1 inversión</Text>
+            <TouchableOpacity onPress={goToInvestments}>
+                <Card>
+                    <View style={[main.flex, main.gap_16, main.p_16]}>
+                        <Text>1 inversión</Text>
+                        <View>
+                            <Text style={styles.dolar_min}>$506.23</Text>
+                            <Text>109 días para cerrar 1 inversión</Text>
+                        </View>
+                        <View style={[main.flex, main.flex_row, main.justify_end]}>
+                            <TouchableOpacity style={styles.button}>
+                                <Text style={main.color_white}>Nueva Inversión</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    <View style={[main.flex, main.flex_row, main.justify_end]}>
-                        <TouchableOpacity style={styles.button}>
-                            <Text style={main.color_white}>Nueva Inversión</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Card>
+                </Card>
+            </TouchableOpacity>
         </View>
     )
 }

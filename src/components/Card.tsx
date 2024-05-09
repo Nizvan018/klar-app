@@ -17,6 +17,7 @@ export default function Card({ children, other_styles }: Props) {
 
 const styles = StyleSheet.create({
     container: {
+        overflow: 'hidden',
         borderStyle: 'solid',
         borderWidth: 1,
         borderColor: '#f3f3f3',

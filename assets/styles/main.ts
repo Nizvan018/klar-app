@@ -31,11 +31,17 @@ export const main = StyleSheet.create({
     p_16: {
         padding: 16
     },
+    p_8: {
+        padding: 8
+    },
     mt_16: {
         marginTop: 16
     },
     mb_16: {
         marginBottom: 16
+    },
+    mr_8: {
+        marginRight: 8
     },
     gap_32: {
         gap: 32
@@ -45,6 +51,9 @@ export const main = StyleSheet.create({
     },
     gap_8: {
         gap: 8
+    },
+    gap_4: {
+        gap: 4
     },
     bold: {
         fontWeight: '700'

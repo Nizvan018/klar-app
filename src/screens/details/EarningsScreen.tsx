@@ -4,12 +4,10 @@ import { main } from '@assets/styles/main';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootBottomParamList } from '@/types/navigationTypes';
 import { useNavigation } from '@react-navigation/native';
-// import { useUser } from '@/context/AuthContext';
 import Card from '@/components/Card';
 
 export default function EarningsScreen() {
     const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();
-    // const { account } = useUser();
 
     const goBack = () => {
         navigation.goBack();

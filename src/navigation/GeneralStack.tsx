@@ -11,6 +11,7 @@ import MessageScreen from "@/screens/transfer/MessageScreen";
 import DepositScreen from "@/screens/deposit/DepositScreen";
 import DetailsScreen from "@/screens/details/DetailsScreen";
 import EarningsScreen from "@/screens/details/EarningsScreen";
+import InvestmentsScreen from "@/screens/details/InvestmentsScreen";
 
 const GeneralStackNavigator = createNativeStackNavigator();
 
@@ -35,6 +36,7 @@ export default function GeneralStack() {
                     <GeneralStackNavigator.Screen name="Deposit" component={DepositScreen} />
                     <GeneralStackNavigator.Screen name="Details" component={DetailsScreen} />
                     <GeneralStackNavigator.Screen name="Earnings" component={EarningsScreen} />
+                    <GeneralStackNavigator.Screen name="Investments" component={InvestmentsScreen} />
                 </>
             ) : (
                 <>
