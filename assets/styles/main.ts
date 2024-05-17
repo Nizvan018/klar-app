@@ -34,11 +34,17 @@ export const main = StyleSheet.create({
     p_8: {
         padding: 8
     },
+    mt_8: {
+        marginTop: 8
+    },
     mt_16: {
         marginTop: 16
     },
     mb_16: {
         marginBottom: 16
+    },
+    ml_8: {
+        marginLeft: 8
     },
     mr_8: {
         marginRight: 8

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, KeyboardType } from 'react-native';
 import { Controller } from 'react-hook-form';
 import { TextInput } from 'react-native-paper';
 
@@ -14,9 +14,10 @@ interface Props {
 	mode?: 'flat' | 'outlined'
 	outlineColor?: string
 	activeOutlineColor?: string
+	keyboardType?: KeyboardType
 }
 
-export default function CustomTextInput({ control, name, rules = {}, label, secureTextEntry, mode, outlineColor, activeOutlineColor, placeholder }: Props) {
+export default function CustomTextInput({ control, name, rules = {}, label, secureTextEntry, mode, outlineColor, activeOutlineColor, placeholder, keyboardType = 'default' }: Props) {
 	return (
 		<Controller
 			control={control}
@@ -37,6 +38,7 @@ export default function CustomTextInput({ control, name, rules = {}, label, secu
 						outlineColor={error ? '#e77' : outlineColor}
 						activeOutlineColor={error ? '#e77' : activeOutlineColor}
 						cursorColor='black'
+						keyboardType={keyboardType}
 					/>
 					{error && (
 						<Text style={styles.text}>{error.message}</Text>

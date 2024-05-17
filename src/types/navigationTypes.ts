@@ -12,4 +12,5 @@ export type RootBottomParamList = {
     Details: { id: number } | undefined;
     Earnings: { id: number } | undefined;
     Investments: { id: number } | undefined;
+    NewInvestment: { id: number } | undefined;
 }

@@ -32,6 +32,10 @@ export default function DetailsScreen() {
         navigation.navigate('Investments');
     }
 
+    const goToNewInvestment = () => {
+        navigation.navigate('NewInvestment');
+    }
+
     return (
         <View style={styles.container}>
             {/* HEADER */}
@@ -41,7 +45,7 @@ export default function DetailsScreen() {
                         <AntDesign name="arrowleft" size={24} />
                     </TouchableOpacity>
                     <Text style={styles.header_title}>
-                        Contactos
+                        Detalles de la cuenta
                     </Text>
                 </View>
                 <View style={[main.flex, main.flex_row, main.align_center, main.gap_16]}>
@@ -108,7 +112,7 @@ export default function DetailsScreen() {
                             <Text>109 días para cerrar 1 inversión</Text>
                         </View>
                         <View style={[main.flex, main.flex_row, main.justify_end]}>
-                            <TouchableOpacity style={styles.button}>
+                            <TouchableOpacity onPress={goToNewInvestment} style={styles.button}>
                                 <Text style={main.color_white}>Nueva Inversión</Text>
                             </TouchableOpacity>
                         </View>
