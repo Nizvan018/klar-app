@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, KeyboardAvoidingView } from "react-native";
 import { main } from "@assets/styles/main";
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
@@ -56,85 +56,91 @@ export default function DepositScreen() {
     });
 
     return (
-        <View style={styles.container}>
-            {/* HEADER */}
-            <View style={[main.flex, main.flex_row, main.space_between, main.align_center, styles.header]}>
-                <View style={[main.flex, main.flex_row, main.gap_16, main.align_center]}>
-                    <TouchableOpacity onPress={goBack}>
-                        <AntDesign name="arrowleft" size={24} />
-                    </TouchableOpacity>
-                    <Text style={styles.header_title}>
-                        Depósito en efectivo
-                    </Text>
-                </View>
-            </View>
-            <View style={[main.flex, main.gap_8, main.mb_16]}>
-                <Text style={styles.title}>Deposita por Transferencia Bancaria</Text>
-                <Text>Deposita con tu número CLABE</Text>
-            </View>
-            <View style={styles.card}>
-                <Text style={styles.bold}>{account?.name}</Text>
-                <View style={[main.flex, main.flex_row, main.space_between, main.align_center]}>
-                    <View style={[main.flex, main.gap_8]}>
-                        <Text style={main.color_gray}>CLABE Interbancaria</Text>
-                        <Text>{account?.clabe}</Text>
+        <KeyboardAvoidingView
+            behavior="height"
+            keyboardVerticalOffset={0}
+            style={{ flex: 1 }}
+        >
+            <View style={styles.container}>
+                {/* HEADER */}
+                <View style={[main.flex, main.flex_row, main.space_between, main.align_center, styles.header]}>
+                    <View style={[main.flex, main.flex_row, main.gap_16, main.align_center]}>
+                        <TouchableOpacity onPress={goBack}>
+                            <AntDesign name="arrowleft" size={24} />
+                        </TouchableOpacity>
+                        <Text style={styles.header_title}>
+                            Depósito en efectivo
+                        </Text>
                     </View>
-                    <TouchableOpacity>
-                        <MaterialIcons name="content-copy" size={24} />
+                </View>
+                <View style={[main.flex, main.gap_8, main.mb_16]}>
+                    <Text style={styles.title}>Deposita por Transferencia Bancaria</Text>
+                    <Text>Deposita con tu número CLABE</Text>
+                </View>
+                <View style={styles.card}>
+                    <Text style={styles.bold}>{account?.name}</Text>
+                    <View style={[main.flex, main.flex_row, main.space_between, main.align_center]}>
+                        <View style={[main.flex, main.gap_8]}>
+                            <Text style={main.color_gray}>CLABE Interbancaria</Text>
+                            <Text>{account?.clabe}</Text>
+                        </View>
+                        <TouchableOpacity>
+                            <MaterialIcons name="content-copy" size={24} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={[main.flex, main.gap_8]}>
+                        <Text style={main.color_gray}>Banco Receptor</Text>
+                        <Text>Klar - Alternativos</Text>
+                    </View>
+                </View>
+                <View style={[main.flex1, main.justify_center, main.align_center]}>
+                    <Text>Introduzca la cantidad a depositar</Text>
+                    <View style={[main.flex, main.flex_row, main.gap_16]}>
+                        <Text style={[styles.quantity, errors?.amount?.type == 'min' || errors?.amount?.type == 'required' ? styles.bad_quantity : {}]}>$</Text>
+                        <Controller
+                            control={control}
+                            name="amount"
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'Por favor, introduzca la cantidad'
+                                },
+                                min: {
+                                    value: 1,
+                                    message: 'La cantidad mínima es de $1 para transferir'
+                                },
+                                max: {
+                                    value: 100000,
+                                    message: 'Cantidad de dinero no disponible'
+                                }
+                            }}
+                            render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
+                                <>
+                                    <TextInput
+                                        value={value}
+                                        defaultValue="0"
+                                        onChangeText={(text) => { onChange(handleInputChange(text)) }}
+                                        onBlur={onBlur}
+                                        style={[styles.quantity, error?.type == 'min' ? styles.bad_quantity : {}]}
+                                        keyboardType="number-pad"
+                                        selectionColor={'black'}
+                                    />
+                                </>
+                            )}
+                        />
+                    </View>
+
+                    <TouchableOpacity style={styles.button} onPress={onSubmit}>
+                        <Text style={styles.button_text}>Realizar depósito</Text>
+                        {isCharging && (
+                            <View>
+                                <ActivityIndicator color={'white'} size='small' />
+                            </View>
+                        )}
                     </TouchableOpacity>
                 </View>
-                <View style={[main.flex, main.gap_8]}>
-                    <Text style={main.color_gray}>Banco Receptor</Text>
-                    <Text>Klar - Alternativos</Text>
-                </View>
             </View>
-            <View style={[main.flex1, main.justify_center, main.align_center]}>
-                <Text>Introduzca la cantidad a depositar</Text>
-                <View style={[main.flex, main.flex_row, main.gap_16]}>
-                    <Text style={[styles.quantity, errors?.amount?.type == 'min' || errors?.amount?.type == 'required' ? styles.bad_quantity : {}]}>$</Text>
-                    <Controller
-                        control={control}
-                        name="amount"
-                        rules={{
-                            required: {
-                                value: true,
-                                message: 'Por favor, introduzca la cantidad'
-                            },
-                            min: {
-                                value: 1,
-                                message: 'La cantidad mínima es de $1 para transferir'
-                            },
-                            max: {
-                                value: 100000,
-                                message: 'Cantidad de dinero no disponible'
-                            }
-                        }}
-                        render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
-                            <>
-                                <TextInput
-                                    value={value}
-                                    defaultValue="0"
-                                    onChangeText={(text) => { onChange(handleInputChange(text)) }}
-                                    onBlur={onBlur}
-                                    style={[styles.quantity, error?.type == 'min' ? styles.bad_quantity : {}]}
-                                    keyboardType="number-pad"
-                                    selectionColor={'black'}
-                                />
-                            </>
-                        )}
-                    />
-                </View>
-
-                <TouchableOpacity style={styles.button} onPress={onSubmit}>
-                    <Text style={styles.button_text}>Realizar depósito</Text>
-                    {isCharging && (
-                        <View>
-                            <ActivityIndicator color={'white'} size='small' />
-                        </View>
-                    )}
-                </TouchableOpacity>
-            </View>
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 

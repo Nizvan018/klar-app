@@ -13,6 +13,8 @@ import DetailsScreen from "@/screens/details/DetailsScreen";
 import EarningsScreen from "@/screens/details/EarningsScreen";
 import InvestmentsScreen from "@/screens/details/InvestmentsScreen";
 import NewInvestmentScreen from "@/screens/details/NewInvestmentScreen";
+import SelectActionScreen from "@/screens/details/SelectActionScreen";
+import ConfigureInvestmentScreen from "@/screens/details/ConfigureInvestmentScreen";
 
 const GeneralStackNavigator = createNativeStackNavigator();
 
@@ -23,7 +25,12 @@ export default function GeneralStack() {
         <GeneralStackNavigator.Navigator
             initialRouteName="Login"
             screenOptions={{
-                headerShown: false
+                headerShown: false,
+                statusBarStyle: 'dark',
+                statusBarTranslucent: true,
+                contentStyle: {
+                    flex: 1
+                }
             }}
         >
 
@@ -39,6 +46,8 @@ export default function GeneralStack() {
                     <GeneralStackNavigator.Screen name="Earnings" component={EarningsScreen} />
                     <GeneralStackNavigator.Screen name="Investments" component={InvestmentsScreen} />
                     <GeneralStackNavigator.Screen name="NewInvestment" component={NewInvestmentScreen} />
+                    <GeneralStackNavigator.Screen name="SelectAction" component={SelectActionScreen} />
+                    <GeneralStackNavigator.Screen name="ConfigureInvestment" component={ConfigureInvestmentScreen} options={{ statusBarStyle: "light", statusBarTranslucent: true }} />
                 </>
             ) : (
                 <>
@@ -49,7 +58,7 @@ export default function GeneralStack() {
                         options={{
                             headerShown: true,
                             headerTitle: '',
-                            headerTransparent: true
+                            headerTransparent: true,
                         }}
                     />
                 </>

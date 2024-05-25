@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { main } from '@assets/styles/main';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -9,16 +9,19 @@ import { useForm } from 'react-hook-form';
 import { useUser } from '@/context/AuthContext';
 import SwitchSelector from 'react-native-switch-selector';
 import { SetStateAction, useEffect, useState } from 'react';
+import { addInvestments } from '@/api/investments';
+import { Investment } from '@/types/database.type';
+import Card from '@/components/Card';
 
 const deadlines = {
-    1: [ // Flex deadlines
+    'Flex': [ // Flex deadlines
         { days: 365, rate: 10.0 },
         { days: 180, rate: 10.25 },
         { days: 90, rate: 10.5 },
         { days: 30, rate: 10.75 },
         { days: 7, rate: 10.0 }
     ],
-    2: [ // Fiexed deadlines
+    'Fixed': [ // Fiexed deadlines
         { days: 365, rate: 10.5 },
         { days: 180, rate: 10.75 },
         { days: 90, rate: 11.0 },
@@ -29,37 +32,23 @@ const deadlines = {
 
 export default function NewInvestmentScreen() {
     const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();
-    const { control, handleSubmit, formState: { errors } } = useForm();
+    const { control, handleSubmit, formState: { errors }, watch } = useForm();
     const { account } = useUser();
-    const [investmentType, setInvestmentType] = useState(1);
+    const [investmentType, setInvestmentType] = useState<'Flex' | 'Fixed'>('Flex');
     const [isDisabled, setIsDisable] = useState(true);
     const [investmentConf, setInvestmentConf] = useState<{ days: number, rate: number } | null>(null);
 
     const options = [
-        { label: 'Flexible', value: 1 },
-        { label: 'Fija', value: 2, }
+        { label: 'Flexible', value: 0 },
+        { label: 'Fija', value: 1 }
     ]
 
     const goBack = () => {
         navigation.goBack();
     }
 
-    const handleInputChange = (text: string) => {
-        const correctAmount = text.replace(/^0+(?=\d)/, '');
-        const numeric = correctAmount.replace(/[^0-9.]/g, '');
-
-        const regex = /^(\d+)\.(\d{3})$/;
-        const match = numeric.match(regex);
-
-        if (match) {
-            return numeric.slice(0, -1);
-        } else {
-            return numeric;
-        }
-    }
-
     const onPress = (value: number) => {
-        setInvestmentType(value);
+        setInvestmentType(value == 0 ? 'Flex' : 'Fixed');
         setInvestmentConf(null);
     }
 
@@ -68,7 +57,16 @@ export default function NewInvestmentScreen() {
     }
 
     const onSubmit = handleSubmit((data) => {
-        console.log('Todo bien :3');
+        if (investmentConf) {
+            navigation.navigate('SelectAction', {
+                investmentData: {
+                    amount: Number(watch('amount')),
+                    investmentType: investmentType,
+                    days: investmentConf.days,
+                    rate: investmentConf.rate
+                }
+            });
+        }
     });
 
     useEffect(() => {
@@ -106,10 +104,7 @@ export default function NewInvestmentScreen() {
                             value: 100,
                             message: 'El valor mínimo para invertir es de $100.00'
                         },
-                        max: {
-                            value: 100000,
-                            message: 'El valor máximo para invertir es de $100,000.00'
-                        },
+                        max: account.amount,
                         pattern: {
                             value: /^(0|[1-9]\d*)(\.\d{1,2})?$/,
                             message: 'El número no es válido'
@@ -121,7 +116,7 @@ export default function NewInvestmentScreen() {
                     placeholder='Necesitas un mínimo de $100.00'
                     keyboardType='number-pad'
                 />
-                <Text style={[styles.balance, main.color_gray, main.ml_8]}>${account?.amount} de saldo disponible</Text>
+                <Text style={[styles.balance, main.ml_8, errors?.amount?.type == "max" ? { color: 'red' } : main.color_gray]}>${account?.amount} de saldo disponible</Text>
             </View>
 
             {/* INVESTMENT TYPE */}
@@ -148,7 +143,7 @@ export default function NewInvestmentScreen() {
                     <View style={{ width: '90%' }}>
                         {investmentType == 1 ? (
                             <Text>
-                                <Text style={main.bold}>Puedes retirar diner en cualquier momento,</Text> y recibirás los intereses al finalizar el plazo de tu inversión
+                                <Text style={main.bold}>Puedes retirar dinero en cualquier momento,</Text> y recibirás los intereses al finalizar el plazo de tu inversión
                             </Text>
                         ) : (
                             <Text>
@@ -168,11 +163,31 @@ export default function NewInvestmentScreen() {
                     ))}
                 </ScrollView>
 
-                <View>
-                    {investmentConf != null && (
-                        <Text>{investmentConf.days} / {investmentConf.rate}</Text>
-                    )}
-                </View>
+                {investmentConf != null && !errors.amount && watch('amount') !== undefined && watch('amount') !== '' && (
+                    <Card>
+                        <View style={[main.flex, main.flex_row, main.space_between, main.p_12]}>
+                            <View style={[main.flex, main.gap_4]}>
+                                <Text style={styles.dolar}>${(Number(((watch('amount') * (investmentConf.rate / 100)) / 365) * investmentConf.days) + Number(watch('amount'))).toFixed(2)}</Text>
+                                <Text style={main.color_gray}>Total de inversión al finalizar el plazo</Text>
+                            </View>
+                            <View style={styles.mini_card}>
+                                <Text style={main.color_white}>{(investmentType).toUpperCase()}</Text>
+                            </View>
+                        </View>
+                        <View style={[main.ml_8, main.mr_8, styles.divider]}></View>
+                        <View style={[main.flex, main.flex_row, main.gap_32, main.p_12]}>
+                            <View style={[main.flex, main.gap_4]}>
+                                <Text style={main.color_gray}>Tasa anual</Text>
+                                <Text>{investmentConf.rate}%</Text>
+                            </View>
+                            <View style={styles.divider_vertical}></View>
+                            <View style={[main.flex, main.gap_4]}>
+                                <Text style={main.color_gray}>Primer rendimiento</Text>
+                                <Text style={main.color_primary}>${Number(((watch('amount') * (investmentConf.rate / 100)) / 365) * 7).toFixed(2)}</Text>
+                            </View>
+                        </View>
+                    </Card>
+                )}
             </View>
 
             <View style={{ flex: 1, justifyContent: 'flex-end' }}>
@@ -180,12 +195,8 @@ export default function NewInvestmentScreen() {
                 <TouchableOpacity
                     style={[styles.button, main.flex, isDisabled ? { backgroundColor: '#aaa' } : { backgroundColor: '#222' }]}
                     onPress={onSubmit}
+                    disabled={isDisabled}
                 >
-                    {/* {isCharging && (
-                        <View>
-                            <ActivityIndicator color={'white'} size='small' />
-                        </View>
-                    )} */}
                     <Text style={styles.button_text}>Quiero invertir esta cantidad</Text>
                 </TouchableOpacity>
             </View>
@@ -233,6 +244,23 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         paddingVertical: 20,
         borderRadius: 8,
+    },
+    mini_card: {
+        height: 26,
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 8,
+        backgroundColor: '#398'
+    },
+    divider: {
+        display: 'flex',
+        height: 1,
+        backgroundColor: '#efefef'
+    },
+    divider_vertical: {
+        display: 'flex',
+        minWidth: 1,
+        backgroundColor: '#efefef'
     },
     not_selected: {
         backgroundColor: '#e5e5e5'

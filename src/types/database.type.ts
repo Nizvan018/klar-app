@@ -23,3 +23,14 @@ export interface Transfer {
     date: Timestamp
     type: 1 | 2
 }
+
+export interface Investment {
+    account_id: string
+    name: string
+    type: 'Flex' | 'Fixed'
+    rate: number
+    amount: number
+    initDate: Date
+    cutoffDate: Date
+    finalDate: Date
+}

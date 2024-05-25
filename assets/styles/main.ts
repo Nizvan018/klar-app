@@ -31,6 +31,9 @@ export const main = StyleSheet.create({
     p_16: {
         padding: 16
     },
+    p_12: {
+        padding: 12
+    },
     p_8: {
         padding: 8
     },
@@ -54,6 +57,9 @@ export const main = StyleSheet.create({
     },
     gap_32: {
         gap: 32
+    },
+    gap_24: {
+        gap: 24
     },
     gap_16: {
         gap: 16
