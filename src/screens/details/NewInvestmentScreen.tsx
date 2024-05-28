@@ -9,8 +9,6 @@ import { useForm } from 'react-hook-form';
 import { useUser } from '@/context/AuthContext';
 import SwitchSelector from 'react-native-switch-selector';
 import { SetStateAction, useEffect, useState } from 'react';
-import { addInvestments } from '@/api/investments';
-import { Investment } from '@/types/database.type';
 import Card from '@/components/Card';
 
 const deadlines = {

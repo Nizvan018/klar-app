@@ -31,6 +31,5 @@ export interface Investment {
     rate: number
     amount: number
     initDate: Date
-    cutoffDate: Date
     finalDate: Date
 }

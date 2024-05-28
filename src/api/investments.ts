@@ -13,17 +13,16 @@ export const addInvestments = async (investment: Investment) => {
             rate: investment.rate,
             amount: investment.amount,
             initDate: investment.initDate,
-            cutoffDate: investment.cutoffDate,
             finalDate: investment.finalDate
         });
 
         return docRef;
     } catch (error) {
-        console.log(error);
-
         Toast.show({
             type: 'error',
             text1: 'Sucedió un error inesperado, intente más tarde'
         });
+
+        return error;
     }
 }

@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { main } from '@assets/styles/main';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
-import { RouteProp, useNavigation } from '@react-navigation/native';
+import { CommonActions, RouteProp, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootBottomParamList } from '@/types/navigationTypes';
 import Card from '@/components/Card';
@@ -9,6 +9,10 @@ import CustomTextInputCounter from '@/components/inputs/CustomTextInputCounter';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import ActionModal from '@/components/investments/ActionModal';
+import ConfirmModal from '@/components/investments/ConfirmModal';
+import { useUser } from '@/context/AuthContext';
+import { Investment } from '@/types/database.type';
+import { addInvestments } from '@/api/investments';
 
 interface Props {
     route: RouteProp<{}>
@@ -33,17 +37,19 @@ const actionOptions = {
 
 export default function ConfigureInvestmentScreen({ route }: Props) {
     const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();
+    const { user } = useUser();
     let { investmentData, action }: Params = route.params;
     const { handleSubmit, formState: { errors }, control } = useForm();
     const [selectedAction, setSelectedAction] = useState(action);
     const [isDisabled, setIsDisable] = useState(true);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
+    const [finalAmout, setFinalAmout] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
-    console.log(investmentData, selectedAction);
-
-    const account = {
-        amount: 100
-    };
+    useEffect(() => {
+        setFinalAmout(Number(((investmentData.amount * (investmentData.rate / 100)) / 365) * investmentData.days) + Number(investmentData.amount));
+    });
 
     const goBack = () => {
         navigation.goBack();
@@ -58,12 +64,44 @@ export default function ConfigureInvestmentScreen({ route }: Props) {
         setIsModalVisible(false);
     }
 
+    const closeConfirmModal = () => {
+        setIsConfirmModalVisible(false);
+    }
+
     const openModal = () => {
         setIsModalVisible(true);
     }
 
-    const onSubmit = handleSubmit((data) => {
+    const makeInvestment = handleSubmit(async (data) => {
+        setIsLoading(true);
 
+        if (!user) {
+            return;
+        }
+
+        const newInvestment: Investment = {
+            account_id: user?.uid,
+            name: data.name,
+            type: investmentData.investmentType,
+            rate: investmentData.rate,
+            amount: investmentData.amount,
+            initDate: new Date(),
+            finalDate: new Date(Date.now() + (investmentData.days * 24 * 60 * 60 * 1000))
+        }
+
+        await addInvestments(newInvestment);
+
+        navigation.dispatch(CommonActions.reset({
+            index: 1,
+            routes: [
+                { name: 'General' },
+                { name: 'Investments' }
+            ]
+        }));
+    });
+
+    const onSubmit = handleSubmit(() => {
+        setIsConfirmModalVisible(true);
     });
 
     useEffect(() => {
@@ -89,7 +127,7 @@ export default function ConfigureInvestmentScreen({ route }: Props) {
                         <AntDesign name="arrowleft" size={24} color={'white'} />
                     </TouchableOpacity>
                     <Text style={[styles.header_title, main.color_white]}>
-                        Selecciona una acción
+                        Configura tu inversión
                     </Text>
                 </View>
 
@@ -101,27 +139,27 @@ export default function ConfigureInvestmentScreen({ route }: Props) {
                                 <View style={[main.flex, main.gap_4]}>
                                     <View style={[main.flex, main.flex_row]}>
                                         <Text style={[styles.dolar]}>$</Text>
-                                        <Text style={[styles.dolar]}>{account?.amount && Math.floor(account?.amount)}</Text>
-                                        <Text>{account?.amount && (account?.amount % 1).toFixed(2).split('.')[1]}</Text>
+                                        <Text style={[styles.dolar]}>{Math.floor(finalAmout)}</Text>
+                                        <Text>{(finalAmout % 1).toFixed(2).split('.')[1]}</Text>
                                     </View>
                                     <Text style={main.color_gray}>Total de inversión al finalizar el plazo</Text>
                                 </View>
-                                <Text style={[styles.mini_card, main.color_white]}>FIJA</Text>
+                                <Text style={[styles.mini_card, main.color_white]}>{investmentData.investmentType.toUpperCase()}</Text>
                             </View>
                             <View style={[main.flex, main.gap_4]}>
-                                <Text style={styles.dolar_min}>7 días</Text>
-                                <Text style={main.color_gray}>Plazo de la inversión (finaliza el 31 de mayo)</Text>
+                                <Text style={styles.dolar_min}>{investmentData.days} días</Text>
+                                <Text style={main.color_gray}>Plazo de la inversión (finaliza el {Intl.DateTimeFormat('es-Es', { day: 'numeric', month: 'long' }).format(new Date(Date.now() + (investmentData.days * 24 * 60 * 60 * 1000)))})</Text>
                             </View>
                             <View style={[styles.divider]}></View>
                             <View style={[main.flex, main.flex_row, main.gap_32]}>
                                 <View style={[main.flex, main.gap_4]}>
                                     <Text style={main.color_gray}>Tasa anual</Text>
-                                    <Text style={main.bold}>10.25%</Text>
+                                    <Text style={main.bold}>{investmentData.rate.toFixed(2)}%</Text>
                                 </View>
                                 <View style={styles.divider_vertical}></View>
                                 <View style={[main.flex, main.gap_4]}>
                                     <Text style={main.color_gray}>Primer rendimiento</Text>
-                                    <Text style={[main.color_primary, main.bold]}>$1.5</Text>
+                                    <Text style={[main.color_primary, main.bold]}>${Number(((investmentData.amount * (investmentData.rate / 100)) / 365) * 7).toFixed(2)}</Text>
                                 </View>
                             </View>
                         </View>
@@ -180,6 +218,15 @@ export default function ConfigureInvestmentScreen({ route }: Props) {
                     changeAction={changeAction}
                     action={selectedAction}
                     actionOptions={actionOptions}
+                />
+
+                <ConfirmModal
+                    isModalVisible={isConfirmModalVisible}
+                    setIsModalVisible={setIsConfirmModalVisible}
+                    closeModal={closeConfirmModal}
+                    makeInversion={makeInvestment}
+                    investmentType={investmentData.investmentType}
+                    isLoading={isLoading}
                 />
             </View>
         </>
