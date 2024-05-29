@@ -13,7 +13,9 @@ export const addInvestments = async (investment: Investment) => {
             rate: investment.rate,
             amount: investment.amount,
             initDate: investment.initDate,
-            finalDate: investment.finalDate
+            cutoffDate: investment.cutoffDate,
+            finalDate: investment.finalDate,
+            isFinished: investment.isFinished
         });
 
         return docRef;

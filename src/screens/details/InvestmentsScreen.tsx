@@ -15,6 +15,10 @@ export default function InvestmentsScreen() {
         navigation.goBack();
     }
 
+    const goToNewInvestment = () => {
+        navigation.navigate('NewInvestment');
+    }
+
     return (
         <View style={styles.container}>
             {/* HEADER */}
@@ -96,13 +100,8 @@ export default function InvestmentsScreen() {
                 </View>
             </Card>
 
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity onPress={goToNewInvestment} style={styles.button}>
                 <Text style={styles.button_text}>+ Crear inversión</Text>
-                {/* {isCharging && (
-                        <View>
-                            <ActivityIndicator color={'white'} size='small' />
-                        </View>
-                    )} */}
             </TouchableOpacity>
         </View>
     )

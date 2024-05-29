@@ -86,7 +86,9 @@ export default function ConfigureInvestmentScreen({ route }: Props) {
             rate: investmentData.rate,
             amount: investmentData.amount,
             initDate: new Date(),
-            finalDate: new Date(Date.now() + (investmentData.days * 24 * 60 * 60 * 1000))
+            cutoffDate: new Date(),
+            finalDate: new Date(Date.now() + (investmentData.days * 24 * 60 * 60 * 1000)),
+            isFinished: false
         }
 
         await addInvestments(newInvestment);
