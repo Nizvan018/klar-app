@@ -52,7 +52,7 @@ export default function DetailsScreen() {
         let days = 0;
 
         investments?.map(investment => {
-            const investmentDays = (investment.data().finalDate.seconds - investment.data().initDate.seconds) / (24 * 60 * 60);
+            const investmentDays = (investment.data().finalDate.seconds - investment.data().cutoffDate.seconds) / (24 * 60 * 60);
 
             if (days < investmentDays) {
                 days = investmentDays;
