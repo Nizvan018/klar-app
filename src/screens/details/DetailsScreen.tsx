@@ -10,7 +10,7 @@ import CircleButton from '@/components/inputs/CircleButton';
 
 export default function DetailsScreen() {
     const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();
-    const { account } = useUser();
+    const { account, investments } = useUser();
 
     const goBack = () => {
         navigation.goBack();
@@ -34,6 +34,32 @@ export default function DetailsScreen() {
 
     const goToNewInvestment = () => {
         navigation.navigate('NewInvestment');
+    }
+
+    const sumAmounts = () => {
+        let sum = 0;
+
+        investments?.map(investment => {
+            if (!investment.data().isFinished) {
+                sum += Number(investment.data().amount);
+            }
+        });
+
+        return sum;
+    }
+
+    const remainingDays = () => {
+        let days = 0;
+
+        investments?.map(investment => {
+            const investmentDays = (investment.data().finalDate.seconds - investment.data().initDate.seconds) / (24 * 60 * 60);
+
+            if (days < investmentDays) {
+                days = investmentDays;
+            }
+        });
+
+        return days;
     }
 
     return (
@@ -106,10 +132,10 @@ export default function DetailsScreen() {
             <TouchableOpacity onPress={goToInvestments}>
                 <Card>
                     <View style={[main.flex, main.gap_16, main.p_16]}>
-                        <Text>1 inversión</Text>
+                        <Text>{investments?.length} {investments && investments.length != 1 ? 'inversiones' : 'inversión'}</Text>
                         <View>
-                            <Text style={styles.dolar_min}>$506.23</Text>
-                            <Text>109 días para cerrar 1 inversión</Text>
+                            <Text style={styles.dolar_min}>${sumAmounts().toFixed(2)}</Text>
+                            <Text>{remainingDays()} días para cerrar {investments?.length} {investments && investments.length != 1 ? 'inversiones' : 'inversión'}</Text>
                         </View>
                         <View style={[main.flex, main.flex_row, main.justify_end]}>
                             <TouchableOpacity onPress={goToNewInvestment} style={styles.button}>
