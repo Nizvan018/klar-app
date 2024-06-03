@@ -1,7 +1,7 @@
 import { DB } from 'firebase-config';
 import { Investment } from '@/types/database.type';
 import Toast from 'react-native-toast-message';
-import { addDoc, collection, onSnapshot, query, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 
 // Method to set a snapshot on investment collection:
 export const getInvestments = async (user_id: string | undefined, setInvestments: any) => {
@@ -40,9 +40,9 @@ export const addInvestments = async (investment: Investment) => {
             type: investment.type,
             rate: investment.rate,
             amount: investment.amount,
-            initDate: investment.initDate,
-            cutoffDate: investment.cutoffDate,
-            finalDate: investment.finalDate,
+            initDate: new Date(investment.initDate.setHours(0, 0, 0, 0)),
+            cutoffDate: new Date(investment.cutoffDate.setHours(0, 0, 0, 0)),
+            finalDate: new Date(investment.finalDate.setHours(0, 0, 0, 0)),
             isFinished: investment.isFinished
         });
 
@@ -54,5 +54,34 @@ export const addInvestments = async (investment: Investment) => {
         });
 
         return error;
+    }
+}
+
+export const updateCutoffDateInvestment = async (id: string, cutoffDate: Date, isFinished: boolean) => {
+    try {
+        if (id) {
+            const docRef = doc(DB, 'investment', id);
+            const current = await getDoc(docRef);
+
+            if (current.exists()) {
+                const updated = updateDoc(docRef, {
+                    cutoffDate: cutoffDate,
+                    isFinished: isFinished
+                });
+            }
+
+            return true;
+        }
+
+        return false;
+    } catch (error) {
+        console.log(error);
+
+        Toast.show({
+            type: 'error',
+            text1: 'Sucedió un error inesperado, intente más tarde'
+        });
+
+        return false;
     }
 }
