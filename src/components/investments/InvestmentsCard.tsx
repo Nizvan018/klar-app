@@ -1,8 +1,11 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { main } from '@assets/styles/main';
 import { Feather } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import Card from '../Card';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootBottomParamList } from '@/types/navigationTypes';
 
 const image = require("@assets/images/piggy_bank.jpg");
 
@@ -11,6 +14,7 @@ interface Props {
 }
 
 export default function InvestmentsCard({ investment }: Props) {
+    const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();
     const [width, setWidth] = useState('0%');
 
     useEffect(() => {
@@ -34,6 +38,10 @@ export default function InvestmentsCard({ investment }: Props) {
         return (investment.data().amount * (((investment.data().rate / 100) / 365) * duration)) + investment.data().amount;
     }
 
+    const goToInvestmentDetails = (investment: any) => {
+        navigation.navigate('InvestmentDetails', { investment: investment.data(), investmentId: investment.id });
+    }
+
     return (
         investment.data().isFinished ? (
             <Card>
@@ -49,7 +57,7 @@ export default function InvestmentsCard({ investment }: Props) {
             </Card>
         ) : (
             <Card>
-                <View style={[main.flex, main.flex_row, main.gap_8]}>
+                <TouchableOpacity onPress={() => goToInvestmentDetails(investment)} style={[main.flex, main.flex_row, main.gap_8]}>
                     <Image source={image} style={{ width: '30%', aspectRatio: 1 }} resizeMode='cover' />
                     <View style={[main.flex1, main.space_between, main.p_8, main.mr_8]}>
                         <View>
@@ -66,7 +74,7 @@ export default function InvestmentsCard({ investment }: Props) {
                             </View>
                         </View>
                     </View>
-                </View>
+                </TouchableOpacity>
             </Card>
         )
     )

@@ -29,7 +29,7 @@ export const UserProvider = ({ children }: Props) => {
     const [user, setUser] = useState<User | null>(null);
     const [account, setAccount] = useState(null);
     const [investments, setInvestments] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [wasCalculated, setWasCalculated] = useState(false);
 
     useEffect(() => {
         onAuthStateChanged(FIREBASE_AUTH, (user) => {
@@ -40,16 +40,14 @@ export const UserProvider = ({ children }: Props) => {
     useEffect(() => {
         console.log(user);
 
-        setLoading(true);
+        setWasCalculated(false);
 
         if (user) {
             getAccout(user?.uid, setAccount);
             getInvestments(user?.uid, setInvestments);
-            setLoading(false);
         } else {
             setAccount(null);
             setInvestments([]);
-            setLoading(false);
         }
     }, [user]);
 
@@ -63,8 +61,8 @@ export const UserProvider = ({ children }: Props) => {
                     const interest = Number((investment.data().amount * (investment.data().rate / 100) * (days / 365)).toFixed(2));
 
                     const transfer: Transfer = {
-                        transmitter: Number(account.clabe),
-                        recipient: Number(account.number),
+                        transmitter: Number(investment.id),
+                        recipient: Number(account.clabe),
                         amount: Number(interest),
                         concept: `Rendimiento de inversión ${investment.data().name}`,
                         reference: 1234567,
@@ -82,8 +80,8 @@ export const UserProvider = ({ children }: Props) => {
                         const interest = Number((investment.data().amount * (investment.data().rate / 100) * (days / 365)).toFixed(2));
 
                         const transfer: Transfer = {
-                            transmitter: Number(account.clabe),
-                            recipient: Number(account.number),
+                            transmitter: Number(investment.id),
+                            recipient: Number(account.clabe),
                             amount: Number(interest),
                             concept: `Rendimiento de inversión ${investment.data().name}`,
                             reference: 1234567,
@@ -102,11 +100,12 @@ export const UserProvider = ({ children }: Props) => {
     }
 
     useEffect(() => {
-        if (investments.length > 0 && !loading) {
+        if (investments.length > 0 && !wasCalculated) {
             console.log('hola')
+            setWasCalculated(true)
             calcInvestments();
         }
-    }, [loading]);
+    }, [investments]);
 
     return (
         <UserContext.Provider value={{ user, account, setAccount, investments, setInvestments }}>
