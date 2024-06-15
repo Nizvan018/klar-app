@@ -63,7 +63,7 @@ export default function InvestmentsScreen() {
 
                 {/* AMOUNT */}
                 <Text style={[styles.dolar]}>${sumAmounts().toFixed(2)}</Text>
-                <Text>en {investments?.length} {investments && investments.length != 1 ? 'inversiones' : ''}</Text>
+                <Text>en {investments?.filter(investment => !investment.data().isFinished).length} {investments && investments.filter(investment => !investment.data().isFinished).length != 1 ? 'inversiones' : ''}</Text>
 
                 {/* CATEGORIES */}
                 <View style={[main.flex, main.flex_row, main.gap_8, main.mt_16]}>

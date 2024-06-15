@@ -15,7 +15,33 @@ interface Props {
 
 export default function DebitCard({ disabled }: Props) {
     const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();;
-    const { account } = useUser();
+    const { account, investments } = useUser();
+
+    const sumAmounts = () => {
+        let sum = 0;
+
+        investments?.map(investment => {
+            if (!investment.data().isFinished) {
+                sum += Number(investment.data().amount);
+            }
+        });
+
+        return sum;
+    }
+
+    const remainingDays = () => {
+        let days = 0;
+
+        investments?.filter(investment => !investment.data().isFinished).map(investment => {
+            const investmentDays = (investment.data().finalDate.seconds - investment.data().cutoffDate.seconds) / (24 * 60 * 60);
+
+            if (days < investmentDays) {
+                days = investmentDays;
+            }
+        });
+
+        return days;
+    }
 
     const goToTransfer = () => {
         navigation.navigate('Contact');
@@ -54,10 +80,10 @@ export default function DebitCard({ disabled }: Props) {
                     <MaterialIcons name='savings' size={24} />
                     <View>
                         <Text>Total en inversión</Text>
-                        <Text style={[main.color_gray, { marginTop: 8, fontSize: 12 }]}>70 días para cerrar una inversión</Text>
+                        <Text style={[main.color_gray, { marginTop: 8, fontSize: 12 }]}>{remainingDays()} días para cerrar {investments?.filter(investment => !investment.data().isFinished).length} {investments?.filter(investment => !investment.data().isFinished).length != 1 ? 'inversiones' : 'inversión'}</Text>
                     </View>
                 </View>
-                <Text>$500.00</Text>
+                <Text>${sumAmounts().toFixed(2)}</Text>
             </TouchableOpacity>
 
             <View style={styles.divider}></View>

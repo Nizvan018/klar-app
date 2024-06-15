@@ -51,7 +51,7 @@ export default function DetailsScreen() {
     const remainingDays = () => {
         let days = 0;
 
-        investments?.map(investment => {
+        investments?.filter(investment => !investment.data().isFinished).map(investment => {
             const investmentDays = (investment.data().finalDate.seconds - investment.data().cutoffDate.seconds) / (24 * 60 * 60);
 
             if (days < investmentDays) {
@@ -135,7 +135,7 @@ export default function DetailsScreen() {
                         <Text>{investments?.length} {investments && investments.length != 1 ? 'inversiones' : 'inversión'}</Text>
                         <View>
                             <Text style={styles.dolar_min}>${sumAmounts().toFixed(2)}</Text>
-                            <Text>{remainingDays()} días para cerrar {investments?.length} {investments && investments.length != 1 ? 'inversiones' : 'inversión'}</Text>
+                            <Text>{remainingDays()} días para cerrar {investments?.filter(investment => !investment.data().isFinished).length} {investments && investments.length != 1 ? 'inversiones' : 'inversión'}</Text>
                         </View>
                         <View style={[main.flex, main.flex_row, main.justify_end]}>
                             <TouchableOpacity onPress={goToNewInvestment} style={styles.button}>
