@@ -1,7 +1,7 @@
 import { DB } from 'firebase-config';
 import { Investment } from '@/types/database.type';
 import Toast from 'react-native-toast-message';
-import { addDoc, collection, doc, getDoc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
+import { DocumentReference, addDoc, collection, doc, getDoc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 
 // Method to set a snapshot on investment collection:
 export const getInvestments = async (user_id: string | undefined, setInvestments: any) => {
@@ -32,7 +32,7 @@ export const getInvestments = async (user_id: string | undefined, setInvestments
 }
 
 // Method to create a new investments in the db:
-export const addInvestments = async (investment: Investment) => {
+export const addInvestments = async (investment: Investment): Promise<any> => {
     try {
         const docRef = await addDoc(collection(DB, "investment"), {
             account_id: investment.account_id,

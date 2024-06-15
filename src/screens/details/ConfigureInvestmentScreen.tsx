@@ -11,8 +11,10 @@ import { useEffect, useState } from 'react';
 import ActionModal from '@/components/investments/ActionModal';
 import ConfirmModal from '@/components/investments/ConfirmModal';
 import { useUser } from '@/context/AuthContext';
-import { Investment } from '@/types/database.type';
+import { Investment, Transfer } from '@/types/database.type';
 import { addInvestments } from '@/api/investments';
+import { updateAccount } from '@/api/accout';
+import { addTransfer } from '@/api/transfers';
 
 interface Props {
     route: RouteProp<{}>
@@ -37,7 +39,7 @@ const actionOptions = {
 
 export default function ConfigureInvestmentScreen({ route }: Props) {
     const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();
-    const { user } = useUser();
+    const { user, account } = useUser();
     let { investmentData, action }: Params = route.params;
     const { handleSubmit, formState: { errors }, control } = useForm();
     const [selectedAction, setSelectedAction] = useState(action);
@@ -79,6 +81,8 @@ export default function ConfigureInvestmentScreen({ route }: Props) {
             return;
         }
 
+        await updateAccount(user?.uid, (-investmentData.amount));
+
         const newInvestment: Investment = {
             account_id: user?.uid,
             name: data.name,
@@ -91,7 +95,18 @@ export default function ConfigureInvestmentScreen({ route }: Props) {
             isFinished: false
         }
 
-        await addInvestments(newInvestment);
+        const investmentRef = await addInvestments(newInvestment);
+
+        const newTransfer: Transfer = {
+            transmitter: Number(account?.clabe),
+            recipient: investmentRef.id,
+            amount: Number(investmentData.amount),
+            concept: `Inversión a ${data.name}`,
+            reference: 1234567,
+            type: 1
+        }
+
+        await addTransfer(newTransfer);
 
         navigation.dispatch(CommonActions.reset({
             index: 1,

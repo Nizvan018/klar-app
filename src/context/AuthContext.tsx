@@ -61,7 +61,7 @@ export const UserProvider = ({ children }: Props) => {
                     const interest = Number((investment.data().amount * (investment.data().rate / 100) * (days / 365)).toFixed(2));
 
                     const transfer: Transfer = {
-                        transmitter: Number(investment.id),
+                        transmitter: investment.id,
                         recipient: Number(account.clabe),
                         amount: Number(interest),
                         concept: `Rendimiento de inversión ${investment.data().name}`,
@@ -80,10 +80,19 @@ export const UserProvider = ({ children }: Props) => {
                         const interest = Number((investment.data().amount * (investment.data().rate / 100) * (days / 365)).toFixed(2));
 
                         const transfer: Transfer = {
-                            transmitter: Number(investment.id),
+                            transmitter: investment.id,
                             recipient: Number(account.clabe),
                             amount: Number(interest),
                             concept: `Rendimiento de inversión ${investment.data().name}`,
+                            reference: 1234567,
+                            type: 1
+                        }
+
+                        const finalTransfer: Transfer = {
+                            transmitter: investment.id,
+                            recipient: Number(account.clabe),
+                            amount: Number(investment.data().amount),
+                            concept: `Reintegro de inversión ${investment.data().name}`,
                             reference: 1234567,
                             type: 1
                         }
@@ -92,7 +101,9 @@ export const UserProvider = ({ children }: Props) => {
 
                         await updateAccount(user?.uid, interest);
                         await addTransfer(transfer);
-                        await updateCutoffDateInvestment(investment.id, new Date(today), true);
+                        await updateAccount(user?.uid, investment.data().amount);
+                        await addTransfer(finalTransfer);
+                        await updateCutoffDateInvestment(investment.id, investment.data().finalDate.toDate().setHours(0, 0, 0, 0), true);
                     }
                 }
             }

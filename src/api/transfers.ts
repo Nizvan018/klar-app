@@ -85,11 +85,16 @@ export const getUserTransfers = async (accountNumber: number, setMovements: any)
 // Method to query investment's transfers with user id from database:
 export const getInvestmentTransfers = async (accountNumber: number, investmentId: string, setMovements: any) => {
     try {
-        const q = query(collection(DB, 'transfer'),
+        const q = query(collection(DB, 'transfer'), or(
             and(
                 where("transmitter", "==", investmentId),
                 where("recipient", "==", accountNumber)
             ),
+            and(
+                where("transmitter", "==", accountNumber),
+                where("recipient", "==", investmentId)
+            )
+        ),
             orderBy("date", "desc"),
             limit(20)
         );
