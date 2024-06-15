@@ -194,11 +194,11 @@ export default function ConfigureInvestmentScreen({ route }: Props) {
                                 value: true,
                                 message: 'Por favor, introduzca el nombre para su inversión'
                             },
-                            min: {
+                            minLength: {
                                 value: 2,
                                 message: 'El nombre es muy corto'
                             },
-                            max: {
+                            maxLength: {
                                 value: 40,
                                 message: 'Límite máximo alcanzado'
                             }

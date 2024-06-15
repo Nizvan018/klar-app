@@ -1,12 +1,10 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { main } from '@assets/styles/main';
-import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
-import { CommonActions, RouteProp, useNavigation } from '@react-navigation/native';
+import { AntDesign } from '@expo/vector-icons';
+import { RouteProp, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootBottomParamList } from '@/types/navigationTypes';
 import Card from '@/components/Card';
-import CustomTextInputCounter from '@/components/inputs/CustomTextInputCounter';
-import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { useUser } from '@/context/AuthContext';
 import CircleButton from '@/components/inputs/CircleButton';
@@ -51,6 +49,10 @@ export default function InvestmentDetailsScreen({ route }: Props) {
 
     const goBack = () => {
         navigation.goBack();
+    }
+
+    const goAdjust = () => {
+        navigation.navigate('AdjustInvestment', { name: investment.name, action: 'retire' });
     }
 
     const calculateDuration = (start: number, end: number) => {
@@ -117,7 +119,7 @@ export default function InvestmentDetailsScreen({ route }: Props) {
                         </Card>
                     </View>
 
-                    <CircleButton action={() => console.log("Ajustes")} label='Ajustes'>
+                    <CircleButton action={() => goAdjust()} label='Ajustes'>
                         <Ionicons name="options-outline" size={24} color="black" />
                     </CircleButton>
 
@@ -138,9 +140,9 @@ export default function InvestmentDetailsScreen({ route }: Props) {
                     <View style={styles.small_card}>
                         <View style={[main.flex, main.gap_4]}>
                             <Text>Valor futuro de esta inversión</Text>
-                            <Text style={main.color_gray}>El 10 de junio recibirás tu pago número 15</Text>
+                            <Text style={main.color_gray}>El {Intl.DateTimeFormat('es-Es', { day: 'numeric', month: 'long' }).format(investment.finalDate.toDate())} recibirás tu pago final</Text>
                         </View>
-                        <Text style={main.color_primary}>$547.42</Text>
+                        <Text style={[main.color_primary, styles.text_16]}>${(Number(((investment.amount * (investment.rate / 100)) / 365) * calculateDuration(investment.initDate, investment.finalDate)) + Number(investment.amount)).toFixed(2)}</Text>
                     </View>
 
                     <Text style={[styles.text_16, main.bold]}>Movimientos</Text>
@@ -228,6 +230,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center',
         padding: 16,
         borderRadius: 16,
         backgroundColor: 'lightgray'

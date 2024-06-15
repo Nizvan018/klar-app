@@ -73,6 +73,9 @@ export const main = StyleSheet.create({
     bold: {
         fontWeight: '700'
     },
+    text_16: {
+        fontSize: 16
+    },
     color_primary: {
         color: '#398'
     },
