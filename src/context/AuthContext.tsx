@@ -3,7 +3,7 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { getAccout, updateAccount } from "@/api/accout";
 import { Account, Investment, Transfer } from "@/types/database.type";
-import { getInvestments, updateCutoffDateInvestment } from "@/api/investments";
+import { getInvestments, updateCutoffDateInvestment, updateInvestmentReinvested } from "@/api/investments";
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import { addTransfer } from "@/api/transfers";
 
@@ -88,22 +88,35 @@ export const UserProvider = ({ children }: Props) => {
                             type: 1
                         }
 
-                        const finalTransfer: Transfer = {
-                            transmitter: investment.id,
-                            recipient: Number(account.clabe),
-                            amount: Number(investment.data().amount),
-                            concept: `Reintegro de inversión ${investment.data().name}`,
-                            reference: 1234567,
-                            type: 1
-                        }
-
                         console.log('Si se hizo 2');
 
-                        await updateAccount(user?.uid, interest);
-                        await addTransfer(transfer);
-                        await updateAccount(user?.uid, investment.data().amount);
-                        await addTransfer(finalTransfer);
-                        await updateCutoffDateInvestment(investment.id, investment.data().finalDate.toDate().setHours(0, 0, 0, 0), true);
+                        if (investment.data().action === 'retire') {
+                            const finalTransfer: Transfer = {
+                                transmitter: investment.id,
+                                recipient: Number(account.clabe),
+                                amount: Number(investment.data().amount),
+                                concept: `Reintegro de inversión ${investment.data().name}`,
+                                reference: 1234567,
+                                type: 1
+                            }
+
+                            await updateAccount(user?.uid, interest);
+                            await addTransfer(transfer);
+                            await updateAccount(user?.uid, investment.data().amount);
+                            await addTransfer(finalTransfer);
+                            await updateCutoffDateInvestment(investment.id, investment.data().finalDate.toDate().setHours(0, 0, 0, 0), true);
+                        } else {
+                            await updateAccount(user?.uid, interest);
+                            await addTransfer(transfer);
+
+                            const diference = (investment.data().finalDate.toDate().setHours(0, 0, 0, 0) - investment.data().initDate.toDate().setHours(0, 0, 0, 0)) / (24 * 60 * 60 * 1000);
+                            const newFinalDate = new Date(investment.data().finalDate.toDate());
+
+                            newFinalDate.setDate(newFinalDate.getDate() + diference);
+                            newFinalDate.setHours(0, 0, 0, 0);
+
+                            await updateInvestmentReinvested(investment.id, investment.data().finalDate.toDate().setHours(0, 0, 0, 0), newFinalDate)
+                        }
                     }
                 }
             }

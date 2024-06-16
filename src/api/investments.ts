@@ -38,6 +38,7 @@ export const addInvestments = async (investment: Investment): Promise<any> => {
             account_id: investment.account_id,
             name: investment.name,
             type: investment.type,
+            action: investment.action,
             rate: investment.rate,
             amount: investment.amount,
             initDate: new Date(investment.initDate.setHours(0, 0, 0, 0)),
@@ -67,6 +68,35 @@ export const updateCutoffDateInvestment = async (id: string, cutoffDate: Date, i
                 const updated = updateDoc(docRef, {
                     cutoffDate: cutoffDate,
                     isFinished: isFinished
+                });
+            }
+
+            return true;
+        }
+
+        return false;
+    } catch (error) {
+        console.log(error);
+
+        Toast.show({
+            type: 'error',
+            text1: 'Sucedió un error inesperado, intente más tarde'
+        });
+
+        return false;
+    }
+}
+
+export const updateInvestmentReinvested = async (id: string, cutoffDate: Date, finalDate: Date) => {
+    try {
+        if (id) {
+            const docRef = doc(DB, 'investment', id);
+            const current = await getDoc(docRef);
+
+            if (current.exists()) {
+                const updated = updateDoc(docRef, {
+                    cutoffDate: cutoffDate,
+                    finalDate: finalDate
                 });
             }
 

@@ -87,6 +87,7 @@ export default function ConfigureInvestmentScreen({ route }: Props) {
             account_id: user?.uid,
             name: data.name,
             type: investmentData.investmentType,
+            action: selectedAction,
             rate: investmentData.rate,
             amount: investmentData.amount,
             initDate: new Date(),

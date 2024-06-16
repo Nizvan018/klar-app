@@ -27,6 +27,7 @@ export interface Investment {
     account_id: string
     name: string
     type: 'Flex' | 'Fixed'
+    action: 'retire' | 'reinvest'
     rate: number
     amount: number
     initDate: Date
