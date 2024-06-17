@@ -97,6 +97,12 @@ export default function InvestmentsScreen() {
                     } else {
                         return investment.data().type === "Flex"
                     }
+                }).sort((a, b) => {
+                    if (a.data().isFinished == b.data().isFinished) {
+                        return 0;
+                    }
+
+                    return a.data().isFinished ? 1 : -1;
                 }).map(investment => (
                     <InvestmentsCard key={investment.id} investment={investment} />
                 ))}
