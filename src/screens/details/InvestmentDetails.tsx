@@ -11,6 +11,7 @@ import CircleButton from '@/components/inputs/CircleButton';
 import { Ionicons, Octicons } from '@expo/vector-icons';
 import { Transfer } from '@/types/database.type';
 import { getInvestmentTransfers } from '@/api/transfers';
+import InfoModal from '@/components/investments/InfoModal';
 
 interface Props {
     route: RouteProp<{}>
@@ -29,6 +30,7 @@ export default function InvestmentDetailsScreen({ route }: Props) {
     let { investment, investmentId }: Params = route.params;
     const [width, setWidth] = useState('0%');
     const [movements, setMovements] = useState(Array<Transfer>());
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const fetch = async () => {
         if (account) {
@@ -52,7 +54,7 @@ export default function InvestmentDetailsScreen({ route }: Props) {
     }
 
     const goAdjust = () => {
-        navigation.navigate('AdjustInvestment', { name: investment.name, action: 'retire' });
+        navigation.navigate('AdjustInvestment', { investmentID: investmentId, name: investment.name, action: investment.action });
     }
 
     const calculateDuration = (start: number, end: number) => {
@@ -61,6 +63,14 @@ export default function InvestmentDetailsScreen({ route }: Props) {
 
     const remainingDays = (cutoff: number, end: number) => {
         return (end - cutoff) / (24 * 60 * 60);
+    }
+
+    const openModal = () => {
+        setIsModalVisible(true);
+    }
+
+    const closeModal = () => {
+        setIsModalVisible(false);
     }
 
     return (
@@ -135,7 +145,9 @@ export default function InvestmentDetailsScreen({ route }: Props) {
 
                     </View>
 
-                    <Text style={[styles.link, main.color_primary]}>¿Qué sucede cuando finaliza el plazo?</Text>
+                    <TouchableOpacity onPress={openModal}>
+                        <Text style={[styles.link, main.color_primary]}>¿Qué sucede cuando finaliza el plazo?</Text>
+                    </TouchableOpacity>
 
                     <View style={styles.small_card}>
                         <View style={[main.flex, main.gap_4]}>
@@ -161,6 +173,8 @@ export default function InvestmentDetailsScreen({ route }: Props) {
                     </Card>
                 </View>
             </ScrollView>
+
+            <InfoModal isModalVisible={isModalVisible} closeModal={closeModal} action={investment.action} />
         </>
     )
 }

@@ -8,12 +8,14 @@ import CustomTextInputCounter from '@/components/inputs/CustomTextInputCounter';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import ActionModal from '@/components/investments/ActionModal';
+import { updateInvestmentAction } from '@/api/investments';
 
 interface Props {
     route: RouteProp<{}>
 }
 
 interface Params {
+    investmentID: string,
     name: string,
     action: 'retire' | 'reinvest'
 }
@@ -27,8 +29,12 @@ const actionOptions = {
 
 export default function AdjustInvestmentScreen({ route }: Props) {
     const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();
-    const { name, action }: Params = route.params;
-    const { handleSubmit, formState: { errors }, control } = useForm();
+    const { investmentID, name, action }: Params = route.params;
+    const { handleSubmit, formState: { errors }, control, watch } = useForm({
+        defaultValues: {
+            name: name
+        }
+    });
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedAction, setSelectedAction] = useState(action);
     const [isDisabled, setIsDisabled] = useState(false);
@@ -50,17 +56,25 @@ export default function AdjustInvestmentScreen({ route }: Props) {
         setIsModalVisible(false);
     }
 
-    const onSubmit = handleSubmit((data) => {
-
-    });
-
-    useEffect(() => {
-        if (!errors.name) {
+    const validate = () => {
+        if (!errors.name && (watch('name') != name || selectedAction != action)) {
             setIsDisabled(false);
         } else {
             setIsDisabled(true);
         }
-    }, [errors.name]);
+    }
+
+    const onSubmit = handleSubmit(async (data) => {
+        const updated = await updateInvestmentAction(investmentID, data.name, selectedAction);
+
+        if (updated) {
+            navigation.push('Investments');
+        }
+    });
+
+    useEffect(() => {
+        validate();
+    }, [errors.name, selectedAction]);
 
     return (
         <View style={{ position: 'relative', flex: 1, justifyContent: 'space-between' }}>
@@ -86,20 +100,11 @@ export default function AdjustInvestmentScreen({ route }: Props) {
                     name='name'
                     placeholder={name}
                     rules={{
-                        required: {
-                            value: true,
-                            message: 'El campo está vació'
-                        },
-                        minLength: {
-                            value: 1,
-                            message: 'El nombre es demasiado corto'
-                        },
-                        maxLength: {
-                            value: 40,
-                            message: 'El nombre es damasiado largo'
-                        },
-                        validate: value => {
-                            return value !== name || 'El nombre es el mismo'
+                        required: true,
+                        minLength: 2,
+                        maxLength: 40,
+                        onChange: (event) => {
+                            validate();
                         }
                     }}
                     mode='outlined'
@@ -114,7 +119,6 @@ export default function AdjustInvestmentScreen({ route }: Props) {
                     <Text style={[{ fontSize: 13 }, main.color_gray]}>{actionOptions[selectedAction]}</Text>
                     <MaterialCommunityIcons name='pencil' size={22} color={'black'} />
                 </TouchableOpacity>
-
 
                 <ActionModal
                     isModalVisible={isModalVisible}

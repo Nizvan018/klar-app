@@ -52,6 +52,8 @@ export const UserProvider = ({ children }: Props) => {
     }, [user]);
 
     const calcInvestments = async () => {
+        let countReinvestments = 0;
+
         await Promise.all(investments.map(async (investment) => {
             const today = (new Date().setHours(0, 0, 0, 0));
 
@@ -116,11 +118,17 @@ export const UserProvider = ({ children }: Props) => {
                             newFinalDate.setHours(0, 0, 0, 0);
 
                             await updateInvestmentReinvested(investment.id, investment.data().finalDate.toDate().setHours(0, 0, 0, 0), newFinalDate)
+
+                            countReinvestments += 1;
                         }
                     }
                 }
             }
         }));
+
+        if (countReinvestments > 0) {
+            calcInvestments();
+        }
     }
 
     useEffect(() => {

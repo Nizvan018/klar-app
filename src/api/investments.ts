@@ -115,3 +115,34 @@ export const updateInvestmentReinvested = async (id: string, cutoffDate: Date, f
         return false;
     }
 }
+
+export const updateInvestmentAction = async (id: string, name: string, action: 'reinvest' | 'retire') => {
+    try {
+        if (id) {
+            const docRef = doc(DB, 'investment', id);
+            const current = await getDoc(docRef);
+
+            if (current.exists()) {
+                const updated = updateDoc(docRef, {
+                    name: name,
+                    action: action
+                });
+
+                return true;
+            }
+
+            return false;
+        }
+
+        return false;
+    } catch (error) {
+        console.log(error);
+
+        Toast.show({
+            type: 'error',
+            text1: 'Sucedió un error inesperado, intente más tarde'
+        });
+
+        return false;
+    }
+}
