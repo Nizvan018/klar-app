@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ScrollView } from "react-native";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import CustomTextInput from "@/components/inputs/CustomTextInput";
@@ -21,75 +21,81 @@ export default function LoginScreen() {
     }, [errors?.correo, errors?.password]);
 
     return (
-        <View style={styles.container}>
-            <View style={[styles.top_card, styles.d_flex]}>
-                <Text style={[styles.title, styles.color_black]}>Klar</Text>
-                <View style={[styles.info_card, styles.d_flex]}>
-                    <Text style={[styles.text, styles.color_black]}>de Servicio</Text>
-                    <Text style={[styles.text, styles.color_black]}>Financieros Alternativos SFP</Text>
+        <KeyboardAvoidingView
+            behavior="height"
+            keyboardVerticalOffset={0}
+            style={{ flex: 1 }}
+        >
+            <View style={styles.container}>
+                <View style={[styles.top_card, styles.d_flex]}>
+                    <Text style={[styles.title, styles.color_black]}>Klar</Text>
+                    <View style={[styles.info_card, styles.d_flex]}>
+                        <Text style={[styles.text, styles.color_black]}>de Servicio</Text>
+                        <Text style={[styles.text, styles.color_black]}>Financieros Alternativos SFP</Text>
+                    </View>
+                </View>
+
+                <View style={[styles.bottom_card, styles.d_flex]}>
+                    <Text style={[styles.bottom_title, styles.color_black]}>Iniciar sesión</Text>
+
+                    {/* CORREO ELECTRÓNICO */}
+                    <CustomTextInput
+                        name="correo"
+                        label="Correo"
+                        control={control}
+                        rules={{
+                            required: {
+                                value: true,
+                                message: 'Introduzca su correo electrónico'
+                            },
+                            pattern: {
+                                value: /^[a-z0-9]+@[a-z0-9]+\.[a-z]{2,4}$/,
+                                message: 'Email invalido'
+                            }
+                        }}
+                        mode="outlined"
+                        outlineColor="#aaa"
+                        activeOutlineColor="black"
+                    />
+
+                    {/* CONTRASEÑA */}
+                    <CustomTextInput
+                        name="password"
+                        label="Contraseña"
+                        control={control}
+                        secureTextEntry={true}
+                        rules={{
+                            required: {
+                                value: true,
+                                message: 'Introduzca su contraseña'
+                            },
+                            minLength: {
+                                value: 8,
+                                message: 'La contraseña es muy corta'
+                            },
+                            maxLength: {
+                                value: 50,
+                                message: 'La contraseña es muy larga'
+                            }
+                        }}
+                        mode="outlined"
+                        outlineColor="#aaa"
+                        activeOutlineColor="black"
+                    />
+
+                    <Text style={styles.forgot_pass}>¿Olvidaste tu contraseña?</Text>
+
+                    {/* BOTÓN */}
+                    <TouchableOpacity
+                        style={[styles.button, styles.d_flex, isDisabled ? { backgroundColor: '#aaa' } : { backgroundColor: '#222' }]}
+                        onPress={onSubmit}
+                        disabled={isDisabled}
+                    >
+                        <Text style={styles.button_text}>Iniciar sesión</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
-
-            <View style={[styles.bottom_card, styles.d_flex]}>
-                <Text style={[styles.bottom_title, styles.color_black]}>Iniciar sesión</Text>
-
-                {/* CORREO ELECTRÓNICO */}
-                <CustomTextInput
-                    name="correo"
-                    label="Correo"
-                    control={control}
-                    rules={{
-                        required: {
-                            value: true,
-                            message: 'Introduzca su correo electrónico'
-                        },
-                        pattern: {
-                            value: /^[a-z0-9]+@[a-z0-9]+\.[a-z]{2,4}$/,
-                            message: 'Email invalido'
-                        }
-                    }}
-                    mode="outlined"
-                    outlineColor="#aaa"
-                    activeOutlineColor="black"
-                />
-
-                {/* CONTRASEÑA */}
-                <CustomTextInput
-                    name="password"
-                    label="Contraseña"
-                    control={control}
-                    secureTextEntry={true}
-                    rules={{
-                        required: {
-                            value: true,
-                            message: 'Introduzca su contraseña'
-                        },
-                        minLength: {
-                            value: 8,
-                            message: 'La contraseña es muy corta'
-                        },
-                        maxLength: {
-                            value: 50,
-                            message: 'La contraseña es muy larga'
-                        }
-                    }}
-                    mode="outlined"
-                    outlineColor="#aaa"
-                    activeOutlineColor="black"
-                />
-
-                <Text style={styles.forgot_pass}>¿Olvidaste tu contraseña?</Text>
-
-                {/* BOTÓN */}
-                <TouchableOpacity
-                    style={[styles.button, styles.d_flex, isDisabled ? { backgroundColor: '#aaa' } : { backgroundColor: '#222' }]}
-                    onPress={onSubmit}
-                    disabled={isDisabled}
-                >
-                    <Text style={styles.button_text}>Iniciar sesión</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 

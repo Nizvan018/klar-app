@@ -11,7 +11,7 @@ export interface Account {
     name: string,
     clabe: string,
     card_number: string,
-    account: number
+    amount: number
 }
 
 export interface Transfer {
@@ -20,6 +20,18 @@ export interface Transfer {
     amount: number
     concept: string
     reference?: number
-    date: Timestamp
     type: 1 | 2
+}
+
+export interface Investment {
+    account_id: string
+    name: string
+    type: 'Flex' | 'Fixed'
+    action: 'retire' | 'reinvest'
+    rate: number
+    amount: number
+    initDate: Date
+    cutoffDate: Date
+    finalDate: Date
+    isFinished: boolean
 }

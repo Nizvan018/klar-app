@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextStyle } from "react-native";
+import { View, Text, StyleSheet, TextStyle, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons, FontAwesome6, MaterialCommunityIcons, Feather } from "@expo/vector-icons";
 import Card from "@/components/Card";
@@ -15,7 +15,33 @@ interface Props {
 
 export default function DebitCard({ disabled }: Props) {
     const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();;
-    const { account } = useUser();
+    const { account, investments } = useUser();
+
+    const sumAmounts = () => {
+        let sum = 0;
+
+        investments?.map(investment => {
+            if (!investment.data().isFinished) {
+                sum += Number(investment.data().amount);
+            }
+        });
+
+        return sum;
+    }
+
+    const remainingDays = () => {
+        let days = 0;
+
+        investments?.filter(investment => !investment.data().isFinished).map(investment => {
+            const investmentDays = (investment.data().finalDate.seconds - investment.data().cutoffDate.seconds) / (24 * 60 * 60);
+
+            if (days < investmentDays) {
+                days = investmentDays;
+            }
+        });
+
+        return days;
+    }
 
     const goToTransfer = () => {
         navigation.navigate('Contact');
@@ -23,6 +49,10 @@ export default function DebitCard({ disabled }: Props) {
 
     const goToDeposit = () => {
         navigation.navigate('Deposit');
+    }
+
+    const goToDetails = () => {
+        navigation.navigate('Details');
     }
 
     return (
@@ -34,8 +64,8 @@ export default function DebitCard({ disabled }: Props) {
                 </View>
                 <View style={[main.flex, main.flex_row, main.mt_16]}>
                     <Text style={[styles.dolar, disabled]}>$</Text>
-                    <Text style={[styles.dolar, disabled]}>{Math.floor(account?.amount)}</Text>
-                    <Text style={disabled}>{(account?.amount % 1).toFixed(2).split('.')[1]}</Text>
+                    <Text style={[styles.dolar, disabled]}>{account?.amount && Math.floor(account?.amount)}</Text>
+                    <Text style={disabled}>{account?.amount && (account?.amount % 1).toFixed(2).split('.')[1]}</Text>
                 </View>
                 <View style={[main.flex, main.flex_row, main.align_center, main.gap_16, main.mt_16]}>
                     <Feather name='trending-up' size={20} color={'black'} />
@@ -45,16 +75,16 @@ export default function DebitCard({ disabled }: Props) {
 
             <View style={styles.divider}></View>
 
-            <View style={[main.flex, main.flex_row, main.space_between, main.align_center, main.p_16]}>
+            <TouchableOpacity onPress={goToDetails} style={[main.flex, main.flex_row, main.space_between, main.align_center, main.p_16]}>
                 <View style={[main.flex, main.flex_row, main.align_center, main.gap_16]}>
                     <MaterialIcons name='savings' size={24} />
                     <View>
                         <Text>Total en inversión</Text>
-                        <Text style={[main.color_gray, { marginTop: 8, fontSize: 12 }]}>70 días para cerrar una inversión</Text>
+                        <Text style={[main.color_gray, { marginTop: 8, fontSize: 12 }]}>{remainingDays()} días para cerrar {investments?.filter(investment => !investment.data().isFinished).length} {investments?.filter(investment => !investment.data().isFinished).length != 1 ? 'inversiones' : 'inversión'}</Text>
                     </View>
                 </View>
-                <Text>$500.00</Text>
-            </View>
+                <Text>${sumAmounts().toFixed(2)}</Text>
+            </TouchableOpacity>
 
             <View style={styles.divider}></View>
 
@@ -68,7 +98,7 @@ export default function DebitCard({ disabled }: Props) {
                 <CircleButton label='Depositar a la cuenta' action={goToDeposit}>
                     <MaterialCommunityIcons name='credit-card-plus' size={24} />
                 </CircleButton>
-                <CircleButton label='Más' action={console.log('')}>
+                <CircleButton label='Más' action={goToDetails}>
                     <Feather name='more-horizontal' size={24} />
                 </CircleButton>
             </View>
