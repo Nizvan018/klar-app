@@ -5,6 +5,9 @@ import Card from '@/components/card/Card';
 import { useRef, useState } from 'react';
 import CircleButton from '@/components/inputs/CircleButton';
 import ConfirmModal from '@/components/card/ConfirmModal';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootBottomParamList } from '@/types/navigationTypes';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 const sidePadding = (width - (width * 0.6)) / 2;
@@ -19,6 +22,7 @@ export default function CardsScreen() {
     const [visibleIndex, setVisibleIndex] = useState(0);
     const [cards, setCards] = useState(cardTypes);
     const flatListRef = useRef<FlatList<{ id: string, cardType: string, locked: boolean }>>(null);
+    const navigation = useNavigation<NativeStackNavigationProp<RootBottomParamList>>();
 
     const openModal = () => {
         setIsModalVisible(true);
@@ -81,7 +85,7 @@ export default function CardsScreen() {
                         <CircleButton action={openModal} label={cards[0].locked ? 'Desbloquear' : 'Bloquear'}>
                             <Feather name={cards[0].locked ? 'unlock' : 'lock'} size={24} color={'black'} />
                         </CircleButton>
-                        <CircleButton action={() => { }} label='Gestionar NIP'>
+                        <CircleButton action={() => { navigation.push('NIP') }} label='Gestionar NIP'>
                             <Feather name='shield' size={24} color={'black'} />
                         </CircleButton>
                         <CircleButton action={() => { }} label='Solicitar nueva'>

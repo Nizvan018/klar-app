@@ -3,7 +3,7 @@ import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons'
 import SelectedTab from "@/components/TabBar/SelectedTab";
 // Screens:
 import HomeScreen from "@/screens/home/HomeScreen";
-import CardsScreen from "@/screens/CardsScreen";
+import CardsScreen from "@/screens/card/CardsScreen";
 import ProfileScreen from "@/screens/ProfileScreen";
 import HomeStack from "./HomeStack";
 
