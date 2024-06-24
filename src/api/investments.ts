@@ -66,7 +66,7 @@ export const updateCutoffDateInvestment = async (id: string, cutoffDate: Date, i
 
             if (current.exists()) {
                 const updated = updateDoc(docRef, {
-                    cutoffDate: cutoffDate,
+                    cutoffDate: new Date(cutoffDate),
                     isFinished: isFinished
                 });
             }
@@ -95,8 +95,8 @@ export const updateInvestmentReinvested = async (id: string, cutoffDate: Date, f
 
             if (current.exists()) {
                 const updated = updateDoc(docRef, {
-                    cutoffDate: cutoffDate,
-                    finalDate: finalDate
+                    cutoffDate: new Date(cutoffDate),
+                    finalDate: new Date(finalDate)
                 });
             }
 

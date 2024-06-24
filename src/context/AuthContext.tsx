@@ -117,7 +117,9 @@ export const UserProvider = ({ children }: Props) => {
                             newFinalDate.setDate(newFinalDate.getDate() + diference);
                             newFinalDate.setHours(0, 0, 0, 0);
 
-                            await updateInvestmentReinvested(investment.id, investment.data().finalDate.toDate().setHours(0, 0, 0, 0), newFinalDate)
+                            console.log(investment.data().finalDate.toDate().setHours(0, 0, 0, 0));
+
+                            await updateInvestmentReinvested(investment.id, investment.data().finalDate.toDate().setHours(0, 0, 0, 0), newFinalDate);
 
                             countReinvestments += 1;
                         }
@@ -132,7 +134,7 @@ export const UserProvider = ({ children }: Props) => {
     }
 
     useEffect(() => {
-        if (investments.length > 0 && !wasCalculated) {
+        if (investments.length > 0 && !wasCalculated && user != null) {
             console.log('hola')
             setWasCalculated(true)
             calcInvestments();
