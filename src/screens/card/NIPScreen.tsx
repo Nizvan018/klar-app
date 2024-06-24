@@ -27,7 +27,7 @@ export default function NIPScreen() {
     }
 
     const changeNIP = () => {
-        console.log('Change NIP');
+        navigation.push('ChangeNIP');
     }
 
     const changeIsNIPShowed = () => {
