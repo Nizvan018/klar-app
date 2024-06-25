@@ -25,4 +25,6 @@ export type RootBottomParamList = {
     ConfigureInvestment: { id?: number, investmentData: investmentData, action: string } | undefined;
     InvestmentDetails: { id?: number, investment: any, investmentId: string } | undefined;
     AdjustInvestment: { id?: number, investmentID: string, name: string, action: 'retire' | 'reinvest' } | undefined;
+    NIP: { id?: number } | undefined;
+    ChangeNIP: { id?: number } | undefined;
 }

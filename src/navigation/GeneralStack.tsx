@@ -17,6 +17,8 @@ import SelectActionScreen from "@/screens/details/SelectActionScreen";
 import ConfigureInvestmentScreen from "@/screens/details/ConfigureInvestmentScreen";
 import InvestmentDetailsScreen from "@/screens/details/InvestmentDetails";
 import AdjustInvestmentScreen from "@/screens/details/AdjustInvestmentScreen";
+import NIPScreen from "@/screens/card/NIPScreen";
+import ChangeNIPScreen from "@/screens/card/ChangeNIPScreen";
 
 const GeneralStackNavigator = createNativeStackNavigator();
 
@@ -52,6 +54,8 @@ export default function GeneralStack() {
                     <GeneralStackNavigator.Screen name="ConfigureInvestment" component={ConfigureInvestmentScreen} options={{ statusBarStyle: "light", statusBarTranslucent: true }} />
                     <GeneralStackNavigator.Screen name="InvestmentDetails" component={InvestmentDetailsScreen} options={{ statusBarStyle: "light", statusBarTranslucent: true }} />
                     <GeneralStackNavigator.Screen name="AdjustInvestment" component={AdjustInvestmentScreen} options={{ statusBarStyle: "light", statusBarTranslucent: true }} />
+                    <GeneralStackNavigator.Screen name="NIP" component={NIPScreen} />
+                    <GeneralStackNavigator.Screen name="ChangeNIP" component={ChangeNIPScreen} />
                 </>
             ) : (
                 <>
