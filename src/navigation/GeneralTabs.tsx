@@ -4,7 +4,7 @@ import SelectedTab from "@/components/TabBar/SelectedTab";
 // Screens:
 import HomeScreen from "@/screens/home/HomeScreen";
 import CardsScreen from "@/screens/card/CardsScreen";
-import ProfileScreen from "@/screens/ProfileScreen";
+import ProfileScreen from "@/screens/profile/ProfileScreen";
 import HomeStack from "./HomeStack";
 
 const Tab = createBottomTabNavigator();
