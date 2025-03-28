@@ -43,7 +43,7 @@ npm i
 ```
 3. Execute the project:
 ```sh
-npm run dev
+npm run start
 ```
 4. Create and configure a project in Firebase (database and authentication)
 5. Add the corresponding api keys in the project
